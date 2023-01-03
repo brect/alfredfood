@@ -2,6 +2,7 @@ package com.padawanbr.alfredfood.infrastructure.repository;
 
 import com.padawanbr.alfredfood.domain.model.Cozinha;
 import com.padawanbr.alfredfood.domain.repository.CozinhaRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -35,7 +36,13 @@ public class CozinhaRepositoryImpl implements CozinhaRepository {
 
     @Override
     @Transactional
-    public void removerCozinha(Cozinha cozinha){
+    public void removerCozinha(Long id){
+        final Cozinha cozinha = buscarCozinhaPorId(id);
+
+        if (cozinha == null) {
+            throw new EmptyResultDataAccessException(1);
+        }
+
         entityManager.remove(cozinha);
     }
 
