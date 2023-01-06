@@ -2,6 +2,10 @@ package com.padawanbr.alfredfood.infrastructure.repository;
 
 import com.padawanbr.alfredfood.domain.model.Restaurante;
 import com.padawanbr.alfredfood.domain.repository.CustomRestauranteRepository;
+import com.padawanbr.alfredfood.domain.repository.RestauranteRepository;
+import com.padawanbr.alfredfood.infrastructure.specification.RestauranteSpecs;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -19,6 +23,9 @@ public class RestauranteRepositoryImpl implements CustomRestauranteRepository {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired @Lazy
+    private RestauranteRepository restauranteRepository;
 
     @Override
     public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal) {
@@ -91,5 +98,12 @@ public class RestauranteRepositoryImpl implements CustomRestauranteRepository {
         final TypedQuery<Restaurante> query = entityManager.createQuery(criteriaQuery);
 
         return query.getResultList();
+    }
+
+    @Override
+    public List<Restaurante> findComFreteGratis(String nome) {
+        return restauranteRepository.findAll(
+                RestauranteSpecs.comFreteGratis()
+                        .and(RestauranteSpecs.comNomeSemelhante(nome)));
     }
 }

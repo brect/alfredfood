@@ -9,4 +9,6 @@ public interface CustomRestauranteRepository {
     List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal);
     List<Restaurante> findDinamicoJPQL(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal);
     List<Restaurante> findCriteriaAPI(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal);
+
+    List<Restaurante> findComFreteGratis(String nome);
 }

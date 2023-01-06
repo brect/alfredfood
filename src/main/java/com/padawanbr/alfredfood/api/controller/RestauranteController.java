@@ -42,13 +42,21 @@ public class RestauranteController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/buscar-primeiro")
+    public ResponseEntity<Restaurante> buscarPrimeiro() {
+        final Optional<Restaurante> restaurante = restauranteRepository.buscarPrimeiro();
+
+        if (restaurante.isPresent()) {
+            return ResponseEntity.ok(restaurante.get());
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/com-frete-gratis")
     public List<Restaurante> buscar(@Param("nome") String nome) {
 
-        final RestauranteComFreteGratisSpec restauranteComFreteGratisSpec = new RestauranteComFreteGratisSpec();
-        final RestauranteComNomeSemelhanteSpec restauranteComNomeSemelhanteSpec = new RestauranteComNomeSemelhanteSpec(nome);
-
-        final List<Restaurante> restaurantes = restauranteRepository.findAll(RestauranteSpecs.comFreteGratis().and(RestauranteSpecs.comNomeSemelhante(nome)));
+        final List<Restaurante> restaurantes = restauranteRepository.findComFreteGratis(nome);
 
         return restaurantes;
 
@@ -60,7 +68,7 @@ public class RestauranteController {
     }
 
     @PostMapping
-    public ResponseEntity<?> adicionar (@RequestBody Restaurante restaurante){
+    public ResponseEntity<?> adicionar(@RequestBody Restaurante restaurante) {
         try {
             final Restaurante restauranteSalvo = restauranteService.salvar(restaurante);
 
@@ -96,7 +104,7 @@ public class RestauranteController {
 
     @PatchMapping("/{restauranteId}")
     public ResponseEntity<?> atualizarParcial(@PathVariable Long restauranteId,
-                                       @RequestBody Map<String, Object> params) {
+                                              @RequestBody Map<String, Object> params) {
         Optional<Restaurante> restauranteAtual = restauranteRepository.findById(restauranteId);
 
         if (!restauranteAtual.isPresent()) {
