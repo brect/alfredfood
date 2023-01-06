@@ -5,8 +5,11 @@ import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.model.Restaurante;
 import com.padawanbr.alfredfood.domain.repository.RestauranteRepository;
 import com.padawanbr.alfredfood.domain.service.RestauranteService;
+import com.padawanbr.alfredfood.infrastructure.specification.RestauranteComFreteGratisSpec;
+import com.padawanbr.alfredfood.infrastructure.specification.RestauranteComNomeSemelhanteSpec;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +39,18 @@ public class RestauranteController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/com-frete-gratis")
+    public List<Restaurante> buscar(@Param("nome") String nome) {
+
+        final RestauranteComFreteGratisSpec restauranteComFreteGratisSpec = new RestauranteComFreteGratisSpec();
+        final RestauranteComNomeSemelhanteSpec restauranteComNomeSemelhanteSpec = new RestauranteComNomeSemelhanteSpec(nome);
+
+        final List<Restaurante> restaurantes = restauranteRepository.findAll(restauranteComFreteGratisSpec.and(restauranteComNomeSemelhanteSpec));
+
+        return restaurantes;
+
     }
 
     @GetMapping
