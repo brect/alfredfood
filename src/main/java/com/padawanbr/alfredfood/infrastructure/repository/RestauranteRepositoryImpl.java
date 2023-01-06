@@ -8,7 +8,9 @@ import org.springframework.util.StringUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class RestauranteRepositoryImpl implements CustomRestauranteRepository {
     private EntityManager entityManager;
 
     @Override
-    public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal){
+    public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal) {
         var jpql = "from Restaurante where nome like :nome"
                 + "and taxaFrete between :taxaFreteInicial and :taxaFreteFinal";
 
@@ -33,7 +35,7 @@ public class RestauranteRepositoryImpl implements CustomRestauranteRepository {
     }
 
     @Override
-    public List<Restaurante> findComplexo(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal) {
+    public List<Restaurante> findDinamicoJPQL(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal) {
         var jpql = new StringBuilder();
         var params = new HashMap<String, Object>();
 
@@ -57,6 +59,36 @@ public class RestauranteRepositoryImpl implements CustomRestauranteRepository {
         final TypedQuery<Restaurante> query = entityManager.createQuery(jpql.toString(), Restaurante.class);
 
         params.forEach((chave, valor) -> query.setParameter(chave, valor));
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Restaurante> findCriteriaAPI(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal) {
+
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<Restaurante> criteriaQuery = builder.createQuery(Restaurante.class);
+
+        criteriaQuery.from(Restaurante.class);
+
+        var predicates = new ArrayList<Predicate>();
+
+        final Root<Restaurante> root = criteriaQuery.from(Restaurante.class);
+
+        if (StringUtils.hasLength(nome)) {
+            predicates.add(builder.like(root.get("nome"), nome));
+        }
+        if (taxaFreteInicial != null) {
+            predicates.add(builder.greaterThanOrEqualTo(root.get("taxaFrete"), taxaFreteInicial));
+        }
+        if (taxaFreteFinal != null) {
+            predicates.add(builder.lessThanOrEqualTo(root.get("taxaFrete"), taxaFreteFinal));
+        }
+
+        criteriaQuery.where(predicates.toArray(new Predicate[0]));
+
+        final TypedQuery<Restaurante> query = entityManager.createQuery(criteriaQuery);
 
         return query.getResultList();
     }
