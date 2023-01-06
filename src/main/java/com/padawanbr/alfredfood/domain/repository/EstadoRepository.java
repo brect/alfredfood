@@ -1,11 +1,8 @@
 package com.padawanbr.alfredfood.domain.repository;
 
 import com.padawanbr.alfredfood.domain.model.Estado;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
-public interface EstadoRepository {
-
-    List<Estado> listar();
+public interface EstadoRepository extends JpaRepository<Estado, Long> {
 
 }
