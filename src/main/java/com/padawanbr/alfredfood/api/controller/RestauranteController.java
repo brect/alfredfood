@@ -7,6 +7,7 @@ import com.padawanbr.alfredfood.domain.repository.RestauranteRepository;
 import com.padawanbr.alfredfood.domain.service.RestauranteService;
 import com.padawanbr.alfredfood.infrastructure.specification.RestauranteComFreteGratisSpec;
 import com.padawanbr.alfredfood.infrastructure.specification.RestauranteComNomeSemelhanteSpec;
+import com.padawanbr.alfredfood.infrastructure.specification.RestauranteSpecs;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -47,7 +48,7 @@ public class RestauranteController {
         final RestauranteComFreteGratisSpec restauranteComFreteGratisSpec = new RestauranteComFreteGratisSpec();
         final RestauranteComNomeSemelhanteSpec restauranteComNomeSemelhanteSpec = new RestauranteComNomeSemelhanteSpec(nome);
 
-        final List<Restaurante> restaurantes = restauranteRepository.findAll(restauranteComFreteGratisSpec.and(restauranteComNomeSemelhanteSpec));
+        final List<Restaurante> restaurantes = restauranteRepository.findAll(RestauranteSpecs.comFreteGratis().and(RestauranteSpecs.comNomeSemelhante(nome)));
 
         return restaurantes;
 
