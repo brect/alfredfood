@@ -92,6 +92,8 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-aspects:5.3.24" level="project" />
     <orderEntry type="library" name="Maven: com.mysql:mysql-connector-j:8.0.31" level="project" />
     <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.18.24" level="project" />
+    <orderEntry type="library" name="Maven: org.flywaydb:flyway-mysql:8.5.13" level="project" />
+    <orderEntry type="library" name="Maven: org.flywaydb:flyway-core:8.5.13" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework.boot:spring-boot-starter-test:2.7.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework.boot:spring-boot-test:2.7.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework.boot:spring-boot-test-autoconfigure:2.7.6" level="project" />
