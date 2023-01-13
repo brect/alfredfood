@@ -1,6 +1,7 @@
 package com.padawanbr.alfredfood.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.padawanbr.alfredfood.domain.exception.BussinesException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.model.Restaurante;
 import com.padawanbr.alfredfood.domain.repository.RestauranteRepository;
@@ -78,7 +79,7 @@ public class RestauranteController {
 
             return ResponseEntity.created(location).body(restauranteSalvo);
         } catch (EntidadeNaoEncontradaException ex) {
-            return ResponseEntity.badRequest().build();
+            throw new BussinesException(ex.getMessage());
         }
     }
 
@@ -86,26 +87,21 @@ public class RestauranteController {
     public ResponseEntity<?> atualizar(@PathVariable Long restauranteId,
                                        @RequestBody Restaurante restaurante) {
         try {
-            Optional<Restaurante> restauranteAtual = restauranteRepository.findById(restauranteId);
+            Restaurante restauranteAtual = restauranteService.buscar(restauranteId);
 
-            if (restauranteAtual.isPresent()) {
-                BeanUtils.copyProperties(
-                        restaurante,
-                        restauranteAtual,
-                        "id",
-                        "formasPagamento",
-                        "endereco",
-                        "dataCadastro",
-                        "produtos");
-                final Restaurante restauranteSalvo = restauranteService.salvar(restauranteAtual.get());
-                return ResponseEntity.ok(restauranteSalvo);
-            }
+            BeanUtils.copyProperties(
+                    restaurante,
+                    restauranteAtual,
+                    "id",
+                    "formasPagamento",
+                    "endereco",
+                    "dataCadastro",
+                    "produtos");
+            final Restaurante restauranteSalvo = restauranteService.salvar(restauranteAtual);
+            return ResponseEntity.ok(restauranteSalvo);
 
-            return ResponseEntity.notFound().build();
-
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity.badRequest()
-                    .body(e.getMessage());
+        } catch (EntidadeNaoEncontradaException ex) {
+            throw new BussinesException(ex.getMessage());
         }
     }
 

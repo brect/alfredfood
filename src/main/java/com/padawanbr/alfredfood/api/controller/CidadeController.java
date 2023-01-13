@@ -1,5 +1,6 @@
 package com.padawanbr.alfredfood.api.controller;
 
+import com.padawanbr.alfredfood.domain.exception.BussinesException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeEmUsoException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.model.Cidade;
@@ -31,13 +32,8 @@ public class CidadeController {
 
     @GetMapping("/{cidadeId}")
     public ResponseEntity<Cidade> buscar(@PathVariable Long cidadeId) {
-        Optional<Cidade> cidade = cidadeRepository.findById(cidadeId);
-
-        if (!cidade.isPresent()) {
-            return ResponseEntity.ok(cidade.get());
-        }
-
-        return ResponseEntity.notFound().build();
+        Cidade cidade = cadastroCidade.consultar(cidadeId);
+        return ResponseEntity.ok(cidade);
     }
 
     @PostMapping
@@ -45,46 +41,33 @@ public class CidadeController {
         try {
             cidade = cadastroCidade.salvar(cidade);
 
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(cidade);
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity.badRequest()
-                    .body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.CREATED).body(cidade);
+
+        } catch (EntidadeNaoEncontradaException ex) {
+            throw new BussinesException(ex.getMessage());
         }
     }
 
     @PutMapping("/{cidadeId}")
     public ResponseEntity<?> atualizar(@PathVariable Long cidadeId,
                                        @RequestBody Cidade cidade) {
+        Cidade cidadeAtual = cadastroCidade.consultar(cidadeId);
+
+        BeanUtils.copyProperties(cidade, cidadeAtual, "id");
+        final Cidade cidadeSalva = cadastroCidade.salvar(cidadeAtual);
+
         try {
-            Optional<Cidade> cidadeAtual = cidadeRepository.findById(cidadeId);
 
-            if (cidadeAtual != null) {
-                BeanUtils.copyProperties(cidade, cidadeAtual.get(), "id");
-                final Cidade cidadeSalva = cadastroCidade.salvar(cidadeAtual.get());
-                return ResponseEntity.ok(cidadeSalva);
-            }
-
-            return ResponseEntity.notFound().build();
-
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity.badRequest()
-                    .body(e.getMessage());
+            return ResponseEntity.ok(cidadeSalva);
+        } catch (EntidadeNaoEncontradaException ex) {
+            throw new BussinesException(ex.getMessage());
         }
     }
 
     @DeleteMapping("/{cidadeId}")
     public ResponseEntity<Cidade> remover(@PathVariable Long cidadeId) {
-        try {
-            cadastroCidade.excluir(cidadeId);
-            return ResponseEntity.noContent().build();
-
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity.notFound().build();
-
-        } catch (EntidadeEmUsoException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        cadastroCidade.excluir(cidadeId);
+        return ResponseEntity.noContent().build();
     }
 
 }
