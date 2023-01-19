@@ -1,5 +1,6 @@
 package com.padawanbr.alfredfood.domain.service;
 
+import com.padawanbr.alfredfood.domain.exception.CozinhaNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeEmUsoException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.model.Cozinha;
@@ -24,8 +25,7 @@ public class CozinhaService {
 
     public Cozinha buscar(Long idCozinha) {
         return cozinhaRepository.findById(idCozinha)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                        String.format(MSG_COZINHA_NAO_ENCONTRADA, idCozinha)));
+                .orElseThrow(() -> new CozinhaNaoEncontradaException(idCozinha));
 
     }
 
@@ -37,7 +37,7 @@ public class CozinhaService {
         try {
             cozinhaRepository.deleteById(id);
         } catch (EmptyResultDataAccessException ex) {
-            throw new EntidadeNaoEncontradaException(String.format(MSG_COZINHA_NAO_ENCONTRADA, id));
+            throw new CozinhaNaoEncontradaException(id);
         } catch (DataIntegrityViolationException ex) {
             throw new EntidadeEmUsoException(MSG_COZINHA_EM_USO);
         }

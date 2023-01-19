@@ -4,7 +4,7 @@ import com.padawanbr.alfredfood.domain.exception.EntidadeEmUsoException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.model.Estado;
 import com.padawanbr.alfredfood.domain.repository.EstadoRepository;
-import com.padawanbr.alfredfood.domain.service.CadastroEstadoService;
+import com.padawanbr.alfredfood.domain.service.EstadoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController("/estados")
 public class EstadoController {
@@ -21,7 +20,7 @@ public class EstadoController {
     private EstadoRepository estadoRepository;
 
     @Autowired
-    private CadastroEstadoService cadastroEstado;
+    private EstadoService cadastroEstado;
 
     @GetMapping("/{estadoId}")
     public ResponseEntity<Estado> buscar(@PathVariable Long estadoId) {

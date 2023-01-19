@@ -1,5 +1,7 @@
 package com.padawanbr.alfredfood.api.controller;
 
+import com.padawanbr.alfredfood.domain.exception.BussinesException;
+import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.model.Cozinha;
 import com.padawanbr.alfredfood.domain.repository.CozinhaRepository;
 import com.padawanbr.alfredfood.domain.service.CozinhaService;
@@ -43,9 +45,14 @@ public class CozinhaController {
         final Cozinha cozinhaAtual = cadastroCozinha.buscar(id);
 
         BeanUtils.copyProperties(cozinhaRequest, cozinhaAtual, "id");
-        final Cozinha cozinha = cadastroCozinha.salvar(cozinhaAtual);
 
-        return ResponseEntity.ok(cozinha);
+        try {
+            final Cozinha cozinha = cadastroCozinha.salvar(cozinhaAtual);
+
+            return ResponseEntity.ok(cozinha);
+        } catch (EntidadeNaoEncontradaException ex) {
+            throw new BussinesException(ex.getMessage());
+        }
 
     }
 

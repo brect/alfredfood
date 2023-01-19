@@ -2,6 +2,8 @@ package com.padawanbr.alfredfood.domain.service;
 
 import com.padawanbr.alfredfood.domain.exception.EntidadeEmUsoException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
+import com.padawanbr.alfredfood.domain.exception.EstadoNaoEncontradoException;
+import com.padawanbr.alfredfood.domain.exception.RestauranteNaoEncontradoException;
 import com.padawanbr.alfredfood.domain.model.Cozinha;
 import com.padawanbr.alfredfood.domain.model.Restaurante;
 import com.padawanbr.alfredfood.domain.repository.RestauranteRepository;
@@ -40,16 +42,15 @@ public class RestauranteService {
     }
 
     public Restaurante buscar(Long restauranteId) {
-            return restauranteRepository.findById(restauranteId)
-                    .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                            String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, restauranteId)));
+        return restauranteRepository.findById(restauranteId)
+                .orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
     }
 
     public void excluir(Long id) {
         try {
             restauranteRepository.deleteById(id);
         } catch (EmptyResultDataAccessException ex) {
-            throw new EntidadeNaoEncontradaException(MSG_RESTAURANTE_NAO_ENCONTRADO);
+            throw new RestauranteNaoEncontradoException(id);
         } catch (DataIntegrityViolationException ex) {
             throw new EntidadeEmUsoException("Problema ao remover restaurante");
         }

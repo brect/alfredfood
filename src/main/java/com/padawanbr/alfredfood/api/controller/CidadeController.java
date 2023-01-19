@@ -1,11 +1,10 @@
 package com.padawanbr.alfredfood.api.controller;
 
 import com.padawanbr.alfredfood.domain.exception.BussinesException;
-import com.padawanbr.alfredfood.domain.exception.EntidadeEmUsoException;
-import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
+import com.padawanbr.alfredfood.domain.exception.EstadoNaoEncontradoException;
 import com.padawanbr.alfredfood.domain.model.Cidade;
 import com.padawanbr.alfredfood.domain.repository.CidadeRepository;
-import com.padawanbr.alfredfood.domain.service.CadastroCidadeService;
+import com.padawanbr.alfredfood.domain.service.CidadeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/cidades")
@@ -23,7 +21,7 @@ public class CidadeController {
     private CidadeRepository cidadeRepository;
 
     @Autowired
-    private CadastroCidadeService cadastroCidade;
+    private CidadeService cadastroCidade;
 
     @GetMapping
     public List<Cidade> listar() {
@@ -40,11 +38,9 @@ public class CidadeController {
     public ResponseEntity<?> adicionar(@RequestBody Cidade cidade) {
         try {
             cidade = cadastroCidade.salvar(cidade);
-
             return ResponseEntity.status(HttpStatus.CREATED).body(cidade);
-
-        } catch (EntidadeNaoEncontradaException ex) {
-            throw new BussinesException(ex.getMessage());
+        } catch (EstadoNaoEncontradoException ex) {
+            throw new BussinesException(ex.getMessage(), ex);
         }
     }
 
@@ -59,8 +55,8 @@ public class CidadeController {
         try {
 
             return ResponseEntity.ok(cidadeSalva);
-        } catch (EntidadeNaoEncontradaException ex) {
-            throw new BussinesException(ex.getMessage());
+        } catch (EstadoNaoEncontradoException ex) {
+            throw new BussinesException(ex.getMessage(), ex);
         }
     }
 
