@@ -1,6 +1,8 @@
 package com.padawanbr.alfredfood.api.controller;
 
+import com.padawanbr.alfredfood.api.exeptionhandler.CustomExceptionHandler;
 import com.padawanbr.alfredfood.domain.exception.BussinesException;
+import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.exception.EstadoNaoEncontradoException;
 import com.padawanbr.alfredfood.domain.model.Cidade;
 import com.padawanbr.alfredfood.domain.repository.CidadeRepository;
@@ -63,7 +65,9 @@ public class CidadeController {
     @DeleteMapping("/{cidadeId}")
     public ResponseEntity<Cidade> remover(@PathVariable Long cidadeId) {
         cadastroCidade.excluir(cidadeId);
+
         return ResponseEntity.noContent().build();
     }
+
 
 }
