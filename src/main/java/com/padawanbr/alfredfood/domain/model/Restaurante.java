@@ -8,6 +8,8 @@ import com.padawanbr.alfredfood.core.validation.TaxaFrete;
 import com.padawanbr.alfredfood.core.validation.ValorZeroIncluiDescricao;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -26,6 +28,8 @@ import java.util.List;
 @ValorZeroIncluiDescricao(valueField = "taxaFrete", descriptionField = "nome", mandatoryDescription = "Frete grátis")
 @Data
 @Entity
+@Getter
+@Setter
 public class Restaurante {
 
     @EqualsAndHashCode.Include
@@ -38,7 +42,6 @@ public class Restaurante {
     private String nome;
 
     @NotNull
-//    @TaxaFrete
     @Multiplo(numero = 5)
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;

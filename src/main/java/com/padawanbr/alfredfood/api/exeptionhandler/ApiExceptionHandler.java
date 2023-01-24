@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import com.padawanbr.alfredfood.domain.exception.BussinesException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeEmUsoException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
+import com.padawanbr.alfredfood.domain.exception.ValidatitionException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -226,39 +227,46 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return handleValidationInternal(ex, ex.getBindingResult(), headers, status, request);
+    }
+
+    @ExceptionHandler({ ValidatitionException.class })
+    public ResponseEntity<Object> handleValidacaoException(ValidatitionException ex, WebRequest request) {
+        return handleValidationInternal(ex, ex.getBindingResult(), new HttpHeaders(),
+                HttpStatus.BAD_REQUEST, request);
+    }
+
+    private ResponseEntity<Object> handleValidationInternal(Exception ex, BindingResult bindingResult, HttpHeaders headers,
+                                                            HttpStatus status, WebRequest request) {
 
         ProblemType problemType = ProblemType.DADOS_INVALIDOS;
+        String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
 
-        String message = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
-
-        final BindingResult bindingResult = ex.getBindingResult();
-
-        List<CustomExceptionHandler.Object> fields = bindingResult.getAllErrors()
-                .stream()
+        List<CustomExceptionHandler.Object> problemObjects = bindingResult.getAllErrors().stream()
                 .map(objectError -> {
-                    String messages = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
-                    String fieldError = objectError.getObjectName();
+                    String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
+
+                    String name = objectError.getObjectName();
+
                     if (objectError instanceof FieldError) {
-                        fieldError = ((FieldError) objectError).getField();
+                        name = ((FieldError) objectError).getField();
                     }
 
                     return CustomExceptionHandler.Object.builder()
-                            .name(fieldError)
-                            .message(messages)
+                            .name(name)
+                            .message(message)
                             .build();
                 })
                 .collect(Collectors.toList());
 
-        final CustomExceptionHandler exceptionHandler = customExceptionHandlerBuilder(
-                problemType,
-                status,
-                message)
-                .message(MSG_ERRO_GENERICO)
-                .objects(fields)
+        CustomExceptionHandler problem = customExceptionHandlerBuilder(problemType, status, detail)
+                .message(detail)
+                .objects(problemObjects)
                 .build();
 
-        return handleExceptionInternal(ex, exceptionHandler, headers, status, request);
+        return handleExceptionInternal(ex, problem, headers, status, request);
     }
 
     @Override
