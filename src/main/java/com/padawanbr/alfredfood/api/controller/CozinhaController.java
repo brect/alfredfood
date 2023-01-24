@@ -11,10 +11,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
-@RestController("/cozinhas")
+@RestController
+@RequestMapping("/cozinhas")
 public class CozinhaController {
 
     @Autowired
@@ -34,13 +35,13 @@ public class CozinhaController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public void salvar(@RequestBody Cozinha cozinha) {
+    public void salvar(@RequestBody @Valid Cozinha cozinha) {
         cadastroCozinha.salvar(cozinha);
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Cozinha> atualizar(@PathVariable("id") Long id,
-                                             @RequestBody Cozinha cozinhaRequest) {
+                                             @RequestBody @Valid Cozinha cozinhaRequest) {
 
         final Cozinha cozinhaAtual = cadastroCozinha.buscar(id);
 

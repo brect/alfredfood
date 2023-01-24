@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/estados")
+@RestController
+@RequestMapping("/estados")
 public class EstadoController {
 
     @Autowired
@@ -32,12 +33,7 @@ public class EstadoController {
     private List<Estado> listar() {
         return estadoRepository.findAll();
     }
-//
-//    @PostMapping
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public Estado adicionar(@RequestBody Estado estado) {
-//        return cadastroEstado.salvar(estado);
-//    }
+
 
     @PutMapping("/{estadoId}")
     public ResponseEntity<Estado> atualizar(@PathVariable Long estadoId,

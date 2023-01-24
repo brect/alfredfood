@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -37,7 +38,7 @@ public class CidadeController {
     }
 
     @PostMapping
-    public ResponseEntity<?> adicionar(@RequestBody Cidade cidade) {
+    public ResponseEntity<?> adicionar(@RequestBody @Valid Cidade cidade) {
         try {
             cidade = cadastroCidade.salvar(cidade);
             return ResponseEntity.status(HttpStatus.CREATED).body(cidade);
@@ -48,7 +49,7 @@ public class CidadeController {
 
     @PutMapping("/{cidadeId}")
     public ResponseEntity<?> atualizar(@PathVariable Long cidadeId,
-                                       @RequestBody Cidade cidade) {
+                                       @RequestBody @Valid Cidade cidade) {
         Cidade cidadeAtual = cadastroCidade.consultar(cidadeId);
 
         BeanUtils.copyProperties(cidade, cidadeAtual, "id");

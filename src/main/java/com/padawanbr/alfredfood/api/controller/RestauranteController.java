@@ -1,29 +1,34 @@
 package com.padawanbr.alfredfood.api.controller;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.padawanbr.alfredfood.domain.exception.BussinesException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.model.Restaurante;
 import com.padawanbr.alfredfood.domain.repository.RestauranteRepository;
 import com.padawanbr.alfredfood.domain.service.RestauranteService;
-import com.padawanbr.alfredfood.infrastructure.specification.RestauranteComFreteGratisSpec;
-import com.padawanbr.alfredfood.infrastructure.specification.RestauranteComNomeSemelhanteSpec;
-import com.padawanbr.alfredfood.infrastructure.specification.RestauranteSpecs;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@RestController("/restaurantes")
+
+@RestController
+@RequestMapping("/restaurantes")
 public class RestauranteController {
 
     @Autowired
@@ -60,7 +65,6 @@ public class RestauranteController {
         final List<Restaurante> restaurantes = restauranteRepository.findComFreteGratis(nome);
 
         return restaurantes;
-
     }
 
     @GetMapping
@@ -69,7 +73,7 @@ public class RestauranteController {
     }
 
     @PostMapping
-    public ResponseEntity<?> adicionar(@RequestBody Restaurante restaurante) {
+    public ResponseEntity<?> adicionar(@RequestBody @Valid Restaurante restaurante) {
         try {
             final Restaurante restauranteSalvo = restauranteService.salvar(restaurante);
 
@@ -85,7 +89,7 @@ public class RestauranteController {
 
     @PutMapping("/{restauranteId}")
     public ResponseEntity<?> atualizar(@PathVariable Long restauranteId,
-                                       @RequestBody Restaurante restaurante) {
+                                       @RequestBody @Valid Restaurante restaurante) {
         try {
             Restaurante restauranteAtual = restauranteService.buscar(restauranteId);
 
@@ -107,7 +111,9 @@ public class RestauranteController {
 
     @PatchMapping("/{restauranteId}")
     public ResponseEntity<?> atualizarParcial(@PathVariable Long restauranteId,
-                                              @RequestBody Map<String, Object> params) {
+                                              @RequestBody Map<String,
+                                                      Object> params,
+                                              HttpServletRequest httpServletRequest) {
         Optional<Restaurante> restauranteAtual = restauranteRepository.findById(restauranteId);
 
         if (!restauranteAtual.isPresent()) {
@@ -115,24 +121,34 @@ public class RestauranteController {
         }
 
 
-        merge(params, restauranteAtual.get());
+        merge(params, restauranteAtual.get(), httpServletRequest);
 
         return atualizar(restauranteId, restauranteAtual.get());
     }
 
-    private void merge(Map<String, Object> params, Restaurante restauranteAtual) {
+    private void merge(Map<String, Object> params, Restaurante restauranteAtual, HttpServletRequest httpServletRequest) {
+        ServletServerHttpRequest servletServerHttpRequest = new ServletServerHttpRequest(httpServletRequest);
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        try {
 
-        Restaurante restauranteOrigem = objectMapper.convertValue(params, Restaurante.class);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
 
-        params.forEach((chave, valor) -> {
-            Field field = ReflectionUtils.findField(Restaurante.class, chave);
-            field.setAccessible(true);
+            Restaurante restauranteOrigem = objectMapper.convertValue(params, Restaurante.class);
 
-            Object object = ReflectionUtils.getField(field, restauranteOrigem);
+            params.forEach((chave, valor) -> {
+                Field field = ReflectionUtils.findField(Restaurante.class, chave);
+                field.setAccessible(true);
 
-            ReflectionUtils.setField(field, object, valor);
-        });
+                Object object = ReflectionUtils.getField(field, restauranteOrigem);
+
+                ReflectionUtils.setField(field, object, valor);
+            });
+        } catch (IllegalArgumentException ex) {
+            Throwable throwable = ExceptionUtils.getRootCause(ex);
+
+            throw new HttpMessageNotReadableException(ex.getMessage(), throwable, servletServerHttpRequest);
+        }
     }
 }
