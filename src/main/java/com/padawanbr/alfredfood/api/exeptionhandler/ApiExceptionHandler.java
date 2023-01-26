@@ -90,7 +90,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         final ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
-        final String message = ex.getMessage();
+        final String message = "O corpo da requisição está inválido. Verifique erro de sintaxe.";
 
         final CustomExceptionHandler exceptionHandler = customExceptionHandlerBuilder(
                 problemType,

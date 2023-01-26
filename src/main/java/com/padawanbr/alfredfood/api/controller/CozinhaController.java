@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -35,8 +37,14 @@ public class CozinhaController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public void salvar(@RequestBody @Valid Cozinha cozinha) {
-        cadastroCozinha.salvar(cozinha);
+    public ResponseEntity<?> salvar(@RequestBody @Valid Cozinha cozinha) {
+        final Cozinha cozinhaSalva = cadastroCozinha.salvar(cozinha);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{id}")
+                .buildAndExpand(cozinhaSalva.getId()).toUri();
+
+        return ResponseEntity.created(location).body(cozinhaSalva);
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

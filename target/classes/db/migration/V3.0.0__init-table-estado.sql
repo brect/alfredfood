@@ -6,7 +6,7 @@ CREATE TABLE estado (
                         primary key (id)
 ) engine=InnoDB default charset=utf8;
 
-INSERT INTO estado (nome) SELECT DISTINCT nome_estado FROM alfredfood.cidade;
+INSERT INTO estado (nome) SELECT DISTINCT nome_estado FROM cidade;
 ALTER TABLE cidade ADD COLUMN estado_id bigint not null;
 
 UPDATE cidade c SET c.estado_id = (SELECT e.id FROM estado e WHERE e.nome = c.nome_estado);
