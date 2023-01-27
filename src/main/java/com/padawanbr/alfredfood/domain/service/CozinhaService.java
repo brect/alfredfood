@@ -32,7 +32,7 @@ public class CozinhaService {
 
     @Transactional
     public Cozinha salvar(Cozinha cozinha) {
-        return cozinhaRepository.save(cozinha);
+        return cozinhaRepository.save(cozinha) ;
     }
 
 
@@ -40,6 +40,7 @@ public class CozinhaService {
     public void excluir(Long id) {
         try {
             cozinhaRepository.deleteById(id);
+            cozinhaRepository.flush();
         } catch (EmptyResultDataAccessException ex) {
             throw new CozinhaNaoEncontradaException(id);
         } catch (DataIntegrityViolationException ex) {

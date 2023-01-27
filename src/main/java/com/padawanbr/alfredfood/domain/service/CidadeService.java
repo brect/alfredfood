@@ -28,7 +28,7 @@ public class CidadeService {
     @Autowired
     private EstadoService estadoService;
 
-    public Cidade consultar(Long id){
+    public Cidade consultar(Long id) {
         return cidadeRepository.findById(id)
                 .orElseThrow(() -> new CidadeNaoEncontradaException(id));
     }
@@ -46,7 +46,7 @@ public class CidadeService {
     public void excluir(Long cidadeId) {
         try {
             cidadeRepository.deleteById(cidadeId);
-
+            cidadeRepository.flush();
         } catch (EmptyResultDataAccessException e) {
             throw new CidadeNaoEncontradaException(cidadeId);
         } catch (DataIntegrityViolationException e) {

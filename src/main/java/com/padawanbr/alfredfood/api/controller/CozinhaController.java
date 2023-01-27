@@ -1,5 +1,9 @@
 package com.padawanbr.alfredfood.api.controller;
 
+import com.padawanbr.alfredfood.api.mapper.CozinhaDomainMapper;
+import com.padawanbr.alfredfood.api.mapper.CozinhaModelMapper;
+import com.padawanbr.alfredfood.api.model.request.CozinhaRequest;
+import com.padawanbr.alfredfood.api.model.response.CozinhaDTO;
 import com.padawanbr.alfredfood.domain.exception.BussinesException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.model.Cozinha;
@@ -25,40 +29,46 @@ public class CozinhaController {
     @Autowired
     private CozinhaService cadastroCozinha;
 
+    @Autowired
+    private CozinhaModelMapper cozinhaModelMapper;
+    @Autowired
+    private CozinhaDomainMapper cozinhaDomainMapper;
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Cozinha>> listar() {
-        return ResponseEntity.ok(cozinhaRepository.findAll());
+    public ResponseEntity<List<CozinhaDTO>> listar() {
+        return ResponseEntity.ok(cozinhaModelMapper.toCollectionModel(cozinhaRepository.findAll()));
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Cozinha> findById(@PathVariable("id") Long id) {
+    public ResponseEntity<CozinhaDTO> findById(@PathVariable("id") Long id) {
         final Cozinha cozinha = cadastroCozinha.buscar(id);
-        return ResponseEntity.ok(cozinha);
+        return ResponseEntity.ok(cozinhaModelMapper.toModel(cozinha));
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> salvar(@RequestBody @Valid Cozinha cozinha) {
-        final Cozinha cozinhaSalva = cadastroCozinha.salvar(cozinha);
+    public ResponseEntity<CozinhaDTO> salvar(@RequestBody @Valid CozinhaRequest request) {
+
+        final Cozinha cozinhaSalva = cadastroCozinha.salvar(cozinhaDomainMapper.toDomainObject(request));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(cozinhaSalva.getId()).toUri();
 
-        return ResponseEntity.created(location).body(cozinhaSalva);
+        return ResponseEntity.created(location).body(cozinhaModelMapper.toModel(cozinhaSalva));
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Cozinha> atualizar(@PathVariable("id") Long id,
-                                             @RequestBody @Valid Cozinha cozinhaRequest) {
+    public ResponseEntity<CozinhaDTO> atualizar(@PathVariable("id") Long id,
+                                             @RequestBody @Valid CozinhaRequest request) {
 
         final Cozinha cozinhaAtual = cadastroCozinha.buscar(id);
 
-        BeanUtils.copyProperties(cozinhaRequest, cozinhaAtual, "id");
+        cozinhaDomainMapper.copyToDomainObject(request, cozinhaAtual);
 
         try {
             final Cozinha cozinha = cadastroCozinha.salvar(cozinhaAtual);
 
-            return ResponseEntity.ok(cozinha);
+            return ResponseEntity.ok(cozinhaModelMapper.toModel(cozinha));
         } catch (EntidadeNaoEncontradaException ex) {
             throw new BussinesException(ex.getMessage());
         }
@@ -66,7 +76,7 @@ public class CozinhaController {
     }
 
     @DeleteMapping
-    public void remover(Long id) {
+    public void remover(@PathVariable("id") Long id) {
         cadastroCozinha.excluir(id);
     }
 

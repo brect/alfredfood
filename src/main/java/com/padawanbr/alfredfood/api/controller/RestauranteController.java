@@ -4,12 +4,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.padawanbr.alfredfood.api.mapper.RestauranteDomainMapper;
 import com.padawanbr.alfredfood.api.mapper.RestauranteModelMapper;
-import com.padawanbr.alfredfood.api.model.RestauranteDTO;
+import com.padawanbr.alfredfood.api.model.response.RestauranteDTO;
 import com.padawanbr.alfredfood.api.model.request.RestauranteRequest;
 import com.padawanbr.alfredfood.domain.exception.BussinesException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.exception.ValidatitionException;
-import com.padawanbr.alfredfood.domain.model.Cozinha;
 import com.padawanbr.alfredfood.domain.model.Restaurante;
 import com.padawanbr.alfredfood.domain.repository.RestauranteRepository;
 import com.padawanbr.alfredfood.domain.service.RestauranteService;
@@ -33,7 +32,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -111,18 +109,13 @@ public class RestauranteController {
         }
     }
 
-
     @PutMapping("/{restauranteId}")
     public ResponseEntity<?> atualizar(@PathVariable Long restauranteId,
                                        @RequestBody @Valid RestauranteRequest request) {
         try {
-
-            Restaurante restaurante = restauranteDomainMapper.toDomainObject(request);
-
             Restaurante restauranteAtual = restauranteService.buscar(restauranteId);
 
-            BeanUtils.copyProperties(restaurante, restauranteAtual,
-                    "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
+            restauranteDomainMapper.copyToDomainObject(request, restauranteAtual);
 
             final Restaurante restauranteSalvo = restauranteService.salvar(restauranteAtual);
             return ResponseEntity.ok(restauranteModelMapper.toModel(restauranteSalvo));
@@ -131,55 +124,4 @@ public class RestauranteController {
             throw new BussinesException(ex.getMessage());
         }
     }
-
-//    @PatchMapping("/{restauranteId}")
-//    public ResponseEntity<?> atualizarParcial(@PathVariable Long restauranteId,
-//                                              @RequestBody Map<String, Object> campos, HttpServletRequest request) {
-//        Restaurante restauranteAtual = restauranteService.buscar(restauranteId);
-//
-//        merge(campos, restauranteAtual, request);
-//        validate(restauranteAtual, "restaurante");
-//
-//        return atualizar(restauranteId, restauranteAtual);
-//    }
-
-    private void validate(Restaurante restauranteAtual, String objetctName) {
-        BeanPropertyBindingResult beanPropertyBindingResult = new BeanPropertyBindingResult(restauranteAtual, objetctName);
-        smartValidator.validate(restauranteAtual, beanPropertyBindingResult);
-
-        if (beanPropertyBindingResult.hasErrors()) {
-            throw new ValidatitionException(beanPropertyBindingResult);
-        }
-    }
-
-    private void merge(Map<String, Object> params, Restaurante restauranteAtual, HttpServletRequest httpServletRequest) {
-        ServletServerHttpRequest servletServerHttpRequest = new ServletServerHttpRequest(httpServletRequest);
-
-        try {
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-
-            Restaurante restauranteOrigem = objectMapper.convertValue(params, Restaurante.class);
-
-            params.forEach((chave, valor) -> {
-                Field field = ReflectionUtils.findField(Restaurante.class, chave);
-                field.setAccessible(true);
-
-                Object object = ReflectionUtils.getField(field, restauranteOrigem);
-
-                ReflectionUtils.setField(field, restauranteAtual, object);
-            });
-        } catch (IllegalArgumentException ex) {
-            Throwable throwable = ExceptionUtils.getRootCause(ex);
-
-            throw new HttpMessageNotReadableException(ex.getMessage(), throwable, servletServerHttpRequest);
-        }
-    }
-
-
-
-
-
 }

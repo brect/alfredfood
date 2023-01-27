@@ -1,15 +1,12 @@
-package com.padawanbr.alfredfood.api.model;
+package com.padawanbr.alfredfood.api.model.response;
 
 
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
-public class CozinhaDTO {
-
+@Getter
+public class EstadoDTO {
     private Long id;
-
     private String nome;
-
 }
