@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -18,7 +19,7 @@ public class CustomExceptionHandler {
     private String detail;
 
     private String message;
-    private LocalDateTime timestamp;
+    private OffsetDateTime timestamp;
 
     private List<Object> objects;
 

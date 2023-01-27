@@ -12,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -31,6 +32,7 @@ public class RestauranteService {
         return restauranteRepository.findAll();
     }
 
+    @Transactional
     public Restaurante salvar(Restaurante restaurante) {
 
         Long idCozinha = restaurante.getCozinha().getId();
@@ -46,6 +48,8 @@ public class RestauranteService {
                 .orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
     }
 
+
+    @Transactional
     public void excluir(Long id) {
         try {
             restauranteRepository.deleteById(id);

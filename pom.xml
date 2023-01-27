@@ -16,6 +16,7 @@
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>15</java.version>
+        <modelmapper.version>3.1.0</modelmapper.version>
     </properties>
 
     <dependencies>
@@ -81,10 +82,19 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-mysql</artifactId>
         </dependency>
+
+        <!--Testes -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- Model Mapper-->
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>${modelmapper.version}</version>
         </dependency>
     </dependencies>
 

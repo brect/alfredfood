@@ -28,6 +28,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -278,12 +279,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         if (body == null) {
             body = CustomExceptionHandler.builder()
+                    .timestamp(OffsetDateTime.now())
                     .title(status.getReasonPhrase())
                     .status(status.value())
                     .message(MSG_ERRO_GENERICO)
                     .build();
         } else if (body instanceof String) {
             body = CustomExceptionHandler.builder()
+                    .timestamp(OffsetDateTime.now())
                     .title((String) body)
                     .status(status.value())
                     .message(MSG_ERRO_GENERICO)
@@ -301,7 +304,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(httpStatus.value())
                 .type(problemType.getUri())
                 .detail(detail)
-                .timestamp(LocalDateTime.now());
+                .timestamp(OffsetDateTime.now());
     }
 
 }

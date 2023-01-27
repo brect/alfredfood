@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -29,10 +30,13 @@ public class CozinhaService {
 
     }
 
+    @Transactional
     public Cozinha salvar(Cozinha cozinha) {
         return cozinhaRepository.save(cozinha);
     }
 
+
+    @Transactional
     public void excluir(Long id) {
         try {
             cozinhaRepository.deleteById(id);

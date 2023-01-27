@@ -2,9 +2,14 @@ package com.padawanbr.alfredfood.api.controller;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.padawanbr.alfredfood.api.mapper.RestauranteDomainMapper;
+import com.padawanbr.alfredfood.api.mapper.RestauranteModelMapper;
+import com.padawanbr.alfredfood.api.model.RestauranteDTO;
+import com.padawanbr.alfredfood.api.model.request.RestauranteRequest;
 import com.padawanbr.alfredfood.domain.exception.BussinesException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.exception.ValidatitionException;
+import com.padawanbr.alfredfood.domain.model.Cozinha;
 import com.padawanbr.alfredfood.domain.model.Restaurante;
 import com.padawanbr.alfredfood.domain.repository.RestauranteRepository;
 import com.padawanbr.alfredfood.domain.service.RestauranteService;
@@ -28,6 +33,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -43,12 +49,20 @@ public class RestauranteController {
     @Autowired
     private SmartValidator smartValidator;
 
+    @Autowired
+    private RestauranteModelMapper restauranteModelMapper;
+
+    @Autowired
+    private RestauranteDomainMapper restauranteDomainMapper;
+
     @GetMapping("/{restauranteId}")
-    public ResponseEntity<Restaurante> buscar(@PathVariable Long restauranteId) {
+    public ResponseEntity<RestauranteDTO> buscar(@PathVariable Long restauranteId) {
         Restaurante restaurante = restauranteService.buscar(restauranteId);
 
+        RestauranteDTO restauranteDTO = restauranteModelMapper.toModel(restaurante);
+
         if (restaurante != null) {
-            return ResponseEntity.ok(restaurante);
+            return ResponseEntity.ok(restauranteDTO);
         }
 
         return ResponseEntity.notFound().build();
@@ -74,36 +88,44 @@ public class RestauranteController {
     }
 
     @GetMapping
-    public List<Restaurante> listar() {
-        return restauranteService.listar();
+    public List<RestauranteDTO> listar() {
+        return restauranteModelMapper.toCollectionModel(restauranteService.listar());
     }
 
+
     @PostMapping
-    public ResponseEntity<?> adicionar(@RequestBody @Valid Restaurante restaurante) {
+    public ResponseEntity<?> adicionar(@RequestBody @Valid RestauranteRequest request) {
         try {
+
+            Restaurante restaurante = restauranteDomainMapper.toDomainObject(request);
+
             final Restaurante restauranteSalvo = restauranteService.salvar(restaurante);
 
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest().path("/{id}")
                     .buildAndExpand(restauranteSalvo.getId()).toUri();
 
-            return ResponseEntity.created(location).body(restauranteSalvo);
+            return ResponseEntity.created(location).body(restauranteModelMapper.toModel(restauranteSalvo));
         } catch (EntidadeNaoEncontradaException ex) {
             throw new BussinesException(ex.getMessage());
         }
     }
 
+
     @PutMapping("/{restauranteId}")
     public ResponseEntity<?> atualizar(@PathVariable Long restauranteId,
-                                       @RequestBody @Valid Restaurante restaurante) {
+                                       @RequestBody @Valid RestauranteRequest request) {
         try {
+
+            Restaurante restaurante = restauranteDomainMapper.toDomainObject(request);
+
             Restaurante restauranteAtual = restauranteService.buscar(restauranteId);
 
             BeanUtils.copyProperties(restaurante, restauranteAtual,
                     "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
 
             final Restaurante restauranteSalvo = restauranteService.salvar(restauranteAtual);
-            return ResponseEntity.ok(restauranteSalvo);
+            return ResponseEntity.ok(restauranteModelMapper.toModel(restauranteSalvo));
 
         } catch (EntidadeNaoEncontradaException ex) {
             throw new BussinesException(ex.getMessage());
@@ -112,33 +134,14 @@ public class RestauranteController {
 
 //    @PatchMapping("/{restauranteId}")
 //    public ResponseEntity<?> atualizarParcial(@PathVariable Long restauranteId,
-//                                              @RequestBody Map<String,
-//                                                      Object> params,
-//                                              HttpServletRequest httpServletRequest) {
+//                                              @RequestBody Map<String, Object> campos, HttpServletRequest request) {
 //        Restaurante restauranteAtual = restauranteService.buscar(restauranteId);
 //
-//        if (restauranteAtual == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//
-//        merge(params, restauranteAtual, httpServletRequest);
-//
+//        merge(campos, restauranteAtual, request);
 //        validate(restauranteAtual, "restaurante");
 //
 //        return atualizar(restauranteId, restauranteAtual);
 //    }
-
-
-    @PatchMapping("/{restauranteId}")
-    public  ResponseEntity<?> atualizarParcial(@PathVariable Long restauranteId,
-                                        @RequestBody Map<String, Object> campos, HttpServletRequest request) {
-        Restaurante restauranteAtual = restauranteService.buscar(restauranteId);
-
-        merge(campos, restauranteAtual, request);
-        validate(restauranteAtual, "restaurante");
-
-        return atualizar(restauranteId, restauranteAtual);
-    }
 
     private void validate(Restaurante restauranteAtual, String objetctName) {
         BeanPropertyBindingResult beanPropertyBindingResult = new BeanPropertyBindingResult(restauranteAtual, objetctName);
@@ -174,4 +177,9 @@ public class RestauranteController {
             throw new HttpMessageNotReadableException(ex.getMessage(), throwable, servletServerHttpRequest);
         }
     }
+
+
+
+
+
 }
