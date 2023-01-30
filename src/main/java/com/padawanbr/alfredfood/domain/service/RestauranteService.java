@@ -4,6 +4,7 @@ import com.padawanbr.alfredfood.domain.exception.EntidadeEmUsoException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.exception.EstadoNaoEncontradoException;
 import com.padawanbr.alfredfood.domain.exception.RestauranteNaoEncontradoException;
+import com.padawanbr.alfredfood.domain.model.Cidade;
 import com.padawanbr.alfredfood.domain.model.Cozinha;
 import com.padawanbr.alfredfood.domain.model.Restaurante;
 import com.padawanbr.alfredfood.domain.repository.RestauranteRepository;
@@ -27,6 +28,9 @@ public class RestauranteService {
     @Autowired
     private CozinhaService cozinhaService;
 
+    @Autowired
+    private CidadeService cidadeService;
+
 
     public List<Restaurante> listar() {
         return restauranteRepository.findAll();
@@ -36,9 +40,13 @@ public class RestauranteService {
     public Restaurante salvar(Restaurante restaurante) {
 
         Long idCozinha = restaurante.getCozinha().getId();
+        final Long idCidade = restaurante.getEndereco().getCidade().getId();
+
         final Cozinha cozinha = cozinhaService.buscar(idCozinha);
+        final Cidade cidade = cidadeService.consultar(idCidade);
 
         restaurante.setCozinha(cozinha);
+        restaurante.getEndereco().setCidade(cidade);
 
         return restauranteRepository.save(restaurante);
     }

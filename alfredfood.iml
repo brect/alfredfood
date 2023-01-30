@@ -18,7 +18,7 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
         <datasource-mapping>
-          <factory-entry name="alfredfood" />
+          <factory-entry name="alfredfood" value="6a1d3b2f-30c3-4a02-82d3-1dc63686c12a" />
         </datasource-mapping>
         <naming-strategy-map />
       </configuration>

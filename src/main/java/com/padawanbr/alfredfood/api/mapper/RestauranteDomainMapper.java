@@ -1,6 +1,7 @@
 package com.padawanbr.alfredfood.api.mapper;
 
 import com.padawanbr.alfredfood.api.model.request.RestauranteRequest;
+import com.padawanbr.alfredfood.domain.model.Cidade;
 import com.padawanbr.alfredfood.domain.model.Cozinha;
 import com.padawanbr.alfredfood.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
@@ -19,6 +20,9 @@ public class RestauranteDomainMapper {
 
     public void copyToDomainObject(RestauranteRequest request, Restaurante restaurante){
         restaurante.setCozinha(new Cozinha());
+        if (restaurante.getEndereco() != null) {
+            restaurante.getEndereco().setCidade(new Cidade());
+        }
         modelMapper.map(request, restaurante);
     }
 

@@ -5,6 +5,8 @@ import com.padawanbr.alfredfood.api.mapper.RestauranteModelMapper;
 import com.padawanbr.alfredfood.api.model.request.RestauranteRequest;
 import com.padawanbr.alfredfood.api.model.response.RestauranteDTO;
 import com.padawanbr.alfredfood.domain.exception.BussinesException;
+import com.padawanbr.alfredfood.domain.exception.CidadeNaoEncontradaException;
+import com.padawanbr.alfredfood.domain.exception.CozinhaNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.model.Restaurante;
 import com.padawanbr.alfredfood.domain.repository.RestauranteRepository;
@@ -108,7 +110,7 @@ public class RestauranteController {
             final Restaurante restauranteSalvo = restauranteService.salvar(restauranteAtual);
             return ResponseEntity.ok(restauranteModelMapper.toModel(restauranteSalvo));
 
-        } catch (EntidadeNaoEncontradaException ex) {
+        } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException ex) {
             throw new BussinesException(ex.getMessage());
         }
     }

@@ -2,16 +2,13 @@ package com.padawanbr.alfredfood.api.controller;
 
 
 import com.padawanbr.alfredfood.api.mapper.FormaPagamentoDomainMapper;
-import com.padawanbr.alfredfood.api.model.request.FormaPagamentoRequest;
-import com.padawanbr.alfredfood.api.model.request.RestauranteRequest;
-import com.padawanbr.alfredfood.api.model.response.EstadoDTO;
-import com.padawanbr.alfredfood.api.model.respos.FormaPagamentoDTO;
 import com.padawanbr.alfredfood.api.mapper.FormaPagamentoModelMapper;
+import com.padawanbr.alfredfood.api.model.request.FormaPagamentoRequest;
+import com.padawanbr.alfredfood.api.model.respos.FormaPagamentoDTO;
 import com.padawanbr.alfredfood.domain.exception.BussinesException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.model.Cidade;
 import com.padawanbr.alfredfood.domain.model.FormaPagamento;
-import com.padawanbr.alfredfood.domain.model.Restaurante;
 import com.padawanbr.alfredfood.domain.repository.FormaPagamentoRepository;
 import com.padawanbr.alfredfood.domain.service.FormaPagamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +86,7 @@ public class FormaPagamentoController {
             throw new BussinesException(ex.getMessage());
         }
     }
+
 
     @DeleteMapping("/{formaPagamentoId}")
     public ResponseEntity<Cidade> remover(@PathVariable Long formaPagamentoId) {
