@@ -1,17 +1,14 @@
 package com.padawanbr.alfredfood.api.controller;
 
-import com.padawanbr.alfredfood.api.exeptionhandler.CustomExceptionHandler;
 import com.padawanbr.alfredfood.api.mapper.CidadeDomainMapper;
 import com.padawanbr.alfredfood.api.mapper.CidadeModelMapper;
 import com.padawanbr.alfredfood.api.model.request.CidadeRequset;
 import com.padawanbr.alfredfood.api.model.response.CidadeDTO;
 import com.padawanbr.alfredfood.domain.exception.BussinesException;
-import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.exception.EstadoNaoEncontradoException;
 import com.padawanbr.alfredfood.domain.model.Cidade;
 import com.padawanbr.alfredfood.domain.repository.CidadeRepository;
 import com.padawanbr.alfredfood.domain.service.CidadeService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
