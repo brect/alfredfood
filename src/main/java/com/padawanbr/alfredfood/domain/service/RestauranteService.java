@@ -48,7 +48,6 @@ public class RestauranteService {
                 .orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
     }
 
-
     @Transactional
     public void excluir(Long id) {
         try {
@@ -59,6 +58,18 @@ public class RestauranteService {
         } catch (DataIntegrityViolationException ex) {
             throw new EntidadeEmUsoException("Problema ao remover restaurante");
         }
+    }
+
+    @Transactional
+    public void ativar(Long idRestaurante){
+        final Restaurante restaurante = buscar(idRestaurante);
+        restaurante.desativar();
+    }
+
+    @Transactional
+    public void desativar(Long idRestaurante){
+        final Restaurante restaurante = buscar(idRestaurante);
+        restaurante.desativar();
     }
 
 }

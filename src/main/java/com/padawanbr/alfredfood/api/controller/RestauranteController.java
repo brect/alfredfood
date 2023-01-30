@@ -124,4 +124,16 @@ public class RestauranteController {
             throw new BussinesException(ex.getMessage());
         }
     }
+
+    @PutMapping("/{restauranteId}/ativo")
+    public ResponseEntity<?> ativar(@PathVariable Long restauranteId) {
+        restauranteService.ativar(restauranteId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{restauranteId}/desativado")
+    public ResponseEntity<?> desativar(@PathVariable Long restauranteId) {
+        restauranteService.desativar(restauranteId);
+        return ResponseEntity.noContent().build();
+    }
 }
