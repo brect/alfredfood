@@ -3,6 +3,7 @@ package com.padawanbr.alfredfood.domain.service;
 import com.padawanbr.alfredfood.domain.exception.EntidadeEmUsoException;
 import com.padawanbr.alfredfood.domain.exception.GrupoNaoEncontradoException;
 import com.padawanbr.alfredfood.domain.model.Grupo;
+import com.padawanbr.alfredfood.domain.model.Permissao;
 import com.padawanbr.alfredfood.domain.repository.GrupoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,6 +21,9 @@ public class GruposService {
 
     @Autowired
     private GrupoRepository grupoRepository;
+
+    @Autowired
+    private PermissaoService permissaoService;
 
     public Grupo consultar(Long grupoId) {
 
@@ -49,6 +53,22 @@ public class GruposService {
             throw new EntidadeEmUsoException(
                     String.format(MSG_GRUPO_EM_USO, grupoId));
         }
+    }
+
+    @Transactional
+    public void desassociarPermissao(Long grupoId, Long permissaoId) {
+        Grupo grupo = consultar(grupoId);
+        Permissao permissao = permissaoService.consultar(permissaoId);
+
+        grupo.removerPermissao(permissao);
+    }
+
+    @Transactional
+    public void associarPermissao(Long grupoId, Long permissaoId) {
+        Grupo grupo = consultar(grupoId);
+        Permissao permissao = permissaoService.consultar(permissaoId);
+
+        grupo.adicionarPermissao(permissao);
     }
 
 }

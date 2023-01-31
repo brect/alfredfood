@@ -22,9 +22,6 @@ public class RestauranteFormaPagamentoController {
     @Autowired
     private FormaPagamentoModelMapper formaPagamentoModelMapper;
 
-    @Autowired
-    private FormaPagamentoDomainMapper formaPagamentoDomainMapper;
-
 
     @GetMapping
     public List<FormaPagamentoDTO> listar(@PathVariable Long restauranteId) {
