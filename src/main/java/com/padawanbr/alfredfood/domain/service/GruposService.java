@@ -1,6 +1,5 @@
 package com.padawanbr.alfredfood.domain.service;
 
-import com.padawanbr.alfredfood.domain.exception.CidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeEmUsoException;
 import com.padawanbr.alfredfood.domain.exception.GrupoNaoEncontradoException;
 import com.padawanbr.alfredfood.domain.model.Grupo;

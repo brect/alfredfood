@@ -4,7 +4,7 @@ package com.padawanbr.alfredfood.api.controller;
 import com.padawanbr.alfredfood.api.mapper.FormaPagamentoDomainMapper;
 import com.padawanbr.alfredfood.api.mapper.FormaPagamentoModelMapper;
 import com.padawanbr.alfredfood.api.model.request.FormaPagamentoRequest;
-import com.padawanbr.alfredfood.api.model.respos.FormaPagamentoDTO;
+import com.padawanbr.alfredfood.api.model.response.FormaPagamentoDTO;
 import com.padawanbr.alfredfood.domain.exception.BussinesException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.model.Cidade;

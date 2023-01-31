@@ -1,5 +1,6 @@
 package com.padawanbr.alfredfood.api.model.response;
 
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,19 +8,12 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class RestauranteDTO {
+public class ProdutoDTO {
 
     private Long id;
-
     private String nome;
+    private String descricao;
+    private BigDecimal preco;
+    private boolean ativo;
 
-    private BigDecimal taxaFrete;
-
-    private CozinhaDTO cozinha;
-
-    private Boolean ativo;
-
-    private Boolean aberto;
-
-    private EnderecoDTO endereco;
 }

@@ -1,4 +1,4 @@
-package com.padawanbr.alfredfood.api.model.respos;
+package com.padawanbr.alfredfood.api.model.response;
 
 import lombok.Getter;
 import lombok.Setter;

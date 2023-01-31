@@ -1,11 +1,10 @@
 package com.padawanbr.alfredfood.domain.service;
 
 import com.padawanbr.alfredfood.domain.exception.EntidadeEmUsoException;
-import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
-import com.padawanbr.alfredfood.domain.exception.EstadoNaoEncontradoException;
 import com.padawanbr.alfredfood.domain.exception.RestauranteNaoEncontradoException;
 import com.padawanbr.alfredfood.domain.model.Cidade;
 import com.padawanbr.alfredfood.domain.model.Cozinha;
+import com.padawanbr.alfredfood.domain.model.FormaPagamento;
 import com.padawanbr.alfredfood.domain.model.Restaurante;
 import com.padawanbr.alfredfood.domain.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,9 @@ public class RestauranteService {
 
     @Autowired
     private CidadeService cidadeService;
+
+    @Autowired
+    private FormaPagamentoService formaPagamentoService;
 
 
     public List<Restaurante> listar() {
@@ -80,5 +82,31 @@ public class RestauranteService {
         restaurante.desativar();
     }
 
+    @Transactional
+    public void desassociarFormaPagamento(Long restauranteId, Long formaPagamentoId){
+        final Restaurante restaurante = buscar(restauranteId);
+        final FormaPagamento formaPagamento = formaPagamentoService.consultar(formaPagamentoId);
+
+        restaurante.removerFormaPagamento(formaPagamento);
+    }
+    @Transactional
+    public void associarFormaPagamento(Long restauranteId, Long formaPagamentoId){
+        final Restaurante restaurante = buscar(restauranteId);
+        final FormaPagamento formaPagamento = formaPagamentoService.consultar(formaPagamentoId);
+
+        restaurante.adicionarFormaPagamento(formaPagamento);
+    }
+
+    @Transactional
+    public void abrir(Long restauranteId) {
+        final Restaurante restaurante = buscar(restauranteId);
+        restaurante.abrir();
+    }
+
+    @Transactional
+    public void fechar(Long restauranteId) {
+        final Restaurante restaurante = buscar(restauranteId);
+        restaurante.fechar();
+    }
 }
 

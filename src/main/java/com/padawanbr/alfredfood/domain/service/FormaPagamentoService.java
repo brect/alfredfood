@@ -10,6 +10,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class FormaPagamentoService {
@@ -43,6 +44,10 @@ public class FormaPagamentoService {
     public FormaPagamento consultar(Long formaPagamentoId) {
         return formaPagamentoRepository.findById(formaPagamentoId)
                 .orElseThrow(() -> new FormaPagamentoNaoEncontradaException(formaPagamentoId));
+    }
+
+    public List<FormaPagamento> consultarTodos() {
+        return formaPagamentoRepository.findAll();
     }
 
 }

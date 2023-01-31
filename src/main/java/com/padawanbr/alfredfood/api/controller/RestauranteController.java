@@ -35,9 +35,6 @@ public class RestauranteController {
     private RestauranteRepository restauranteRepository;
 
     @Autowired
-    private SmartValidator smartValidator;
-
-    @Autowired
     private RestauranteModelMapper restauranteModelMapper;
 
     @Autowired
@@ -124,6 +121,20 @@ public class RestauranteController {
     @DeleteMapping("/{restauranteId}/desativado")
     public ResponseEntity<?> desativar(@PathVariable Long restauranteId) {
         restauranteService.desativar(restauranteId);
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @PutMapping("/{restauranteId}/abertura")
+    public ResponseEntity<?> abrir(@PathVariable Long restauranteId) {
+        restauranteService.abrir(restauranteId);
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @PutMapping("/{restauranteId}/fechamento")
+    public ResponseEntity<?> fechar(@PathVariable Long restauranteId) {
+        restauranteService.fechar(restauranteId);
         return ResponseEntity.noContent().build();
     }
 }
