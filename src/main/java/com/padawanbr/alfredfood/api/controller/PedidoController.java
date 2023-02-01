@@ -2,14 +2,17 @@ package com.padawanbr.alfredfood.api.controller;
 
 import com.padawanbr.alfredfood.api.mapper.CidadeModelMapper;
 import com.padawanbr.alfredfood.api.mapper.PedidoModelMapper;
+import com.padawanbr.alfredfood.api.mapper.PedidoResumidoModelMapper;
 import com.padawanbr.alfredfood.api.model.response.CozinhaDTO;
 import com.padawanbr.alfredfood.api.model.response.PedidoDTO;
+import com.padawanbr.alfredfood.api.model.response.PedidoResumidoDTO;
 import com.padawanbr.alfredfood.domain.model.Cozinha;
 import com.padawanbr.alfredfood.domain.model.Pedido;
 import com.padawanbr.alfredfood.domain.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,10 +28,12 @@ public class PedidoController {
     private PedidoService pedidoService;
     @Autowired
     private PedidoModelMapper pedidoModelMapper;
+    @Autowired
+    private PedidoResumidoModelMapper pedidoResumidoModelMapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<PedidoDTO>> listar() {
-        return ResponseEntity.ok(pedidoModelMapper.toCollectionModel(pedidoService.findAll()));
+    public ResponseEntity<List<PedidoResumidoDTO>> listar() {
+        return ResponseEntity.ok(pedidoResumidoModelMapper.toCollectionModel(pedidoService.findAll()));
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

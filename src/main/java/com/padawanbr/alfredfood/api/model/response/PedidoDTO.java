@@ -1,8 +1,14 @@
 package com.padawanbr.alfredfood.api.model.response;
 
+import com.padawanbr.alfredfood.domain.model.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -22,7 +28,7 @@ public class PedidoDTO {
 
     private String status;
 
-    private OffsetDateTime dataCriacao;
+    private OffsetDateTime dataCadastro;
     private OffsetDateTime dataConfirmacao;
     private OffsetDateTime dataCancelamento;
     private OffsetDateTime dataEntrega;
