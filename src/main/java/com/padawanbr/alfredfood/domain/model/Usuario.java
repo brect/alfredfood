@@ -2,6 +2,7 @@ package com.padawanbr.alfredfood.domain.model;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -12,10 +13,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
 @Data
 @Entity
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Usuario {
 
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

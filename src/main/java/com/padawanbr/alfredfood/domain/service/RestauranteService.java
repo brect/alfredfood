@@ -2,10 +2,7 @@ package com.padawanbr.alfredfood.domain.service;
 
 import com.padawanbr.alfredfood.domain.exception.EntidadeEmUsoException;
 import com.padawanbr.alfredfood.domain.exception.RestauranteNaoEncontradoException;
-import com.padawanbr.alfredfood.domain.model.Cidade;
-import com.padawanbr.alfredfood.domain.model.Cozinha;
-import com.padawanbr.alfredfood.domain.model.FormaPagamento;
-import com.padawanbr.alfredfood.domain.model.Restaurante;
+import com.padawanbr.alfredfood.domain.model.*;
 import com.padawanbr.alfredfood.domain.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -33,6 +30,8 @@ public class RestauranteService {
     @Autowired
     private FormaPagamentoService formaPagamentoService;
 
+    @Autowired
+    private UsuarioService usuarioService;
 
     public List<Restaurante> listar() {
         return restauranteRepository.findAll();
@@ -95,6 +94,23 @@ public class RestauranteService {
         final FormaPagamento formaPagamento = formaPagamentoService.consultar(formaPagamentoId);
 
         restaurante.adicionarFormaPagamento(formaPagamento);
+    }
+
+    @Transactional
+    public void desassociarResponsavel(Long restauranteId, Long usuarioId) {
+        Restaurante restaurante = consultar(restauranteId);
+        Usuario usuario = usuarioService.consultar(usuarioId);
+
+        restaurante.removerResponsavel(usuario);
+    }
+
+
+    @Transactional
+    public void associarResponsavel(Long restauranteId, Long usuarioId) {
+        Restaurante restaurante = consultar(restauranteId);
+        Usuario usuario = usuarioService.consultar(usuarioId);
+
+        restaurante.adicionarResponsavel(usuario);
     }
 
     @Transactional
