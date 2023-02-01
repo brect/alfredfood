@@ -72,13 +72,23 @@ public class RestauranteService {
     @Transactional
     public void ativar(Long idRestaurante){
         final Restaurante restaurante = consultar(idRestaurante);
-        restaurante.desativar();
+        restaurante.ativar();
+    }
+
+    @Transactional
+    public void ativar(List<Long> restauranteIds){
+        restauranteIds.forEach(this::ativar);
     }
 
     @Transactional
     public void desativar(Long idRestaurante){
         final Restaurante restaurante = consultar(idRestaurante);
         restaurante.desativar();
+    }
+
+    @Transactional
+    public void desativar(List<Long> restauranteIds){
+        restauranteIds.forEach(this::desativar);
     }
 
     @Transactional

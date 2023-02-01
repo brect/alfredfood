@@ -4,10 +4,7 @@ import com.padawanbr.alfredfood.api.mapper.RestauranteDomainMapper;
 import com.padawanbr.alfredfood.api.mapper.RestauranteModelMapper;
 import com.padawanbr.alfredfood.api.model.request.RestauranteRequest;
 import com.padawanbr.alfredfood.api.model.response.RestauranteDTO;
-import com.padawanbr.alfredfood.domain.exception.BussinesException;
-import com.padawanbr.alfredfood.domain.exception.CidadeNaoEncontradaException;
-import com.padawanbr.alfredfood.domain.exception.CozinhaNaoEncontradaException;
-import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
+import com.padawanbr.alfredfood.domain.exception.*;
 import com.padawanbr.alfredfood.domain.model.Restaurante;
 import com.padawanbr.alfredfood.domain.repository.RestauranteRepository;
 import com.padawanbr.alfredfood.domain.service.RestauranteService;
@@ -118,12 +115,31 @@ public class RestauranteController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/ativacoes")
+    public ResponseEntity<?> ativarEmMassa(@RequestBody List<Long> restauranteIds) {
+        try {
+            restauranteService.ativar(restauranteIds);
+            return ResponseEntity.noContent().build();
+        } catch (RestauranteNaoEncontradoException ex) {
+            throw new BussinesException(ex.getMessage(), ex);
+        }
+    }
+
     @DeleteMapping("/{restauranteId}/desativado")
     public ResponseEntity<?> desativar(@PathVariable Long restauranteId) {
         restauranteService.desativar(restauranteId);
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/desativacoes")
+    public ResponseEntity<?> desativarEmMassa(@RequestBody List<Long> restauranteIds) {
+        try {
+            restauranteService.desativar(restauranteIds);
+            return ResponseEntity.noContent().build();
+        } catch (RestauranteNaoEncontradoException ex) {
+            throw new BussinesException(ex.getMessage(), ex);
+        }
+    }
 
     @PutMapping("/{restauranteId}/abertura")
     public ResponseEntity<?> abrir(@PathVariable Long restauranteId) {
