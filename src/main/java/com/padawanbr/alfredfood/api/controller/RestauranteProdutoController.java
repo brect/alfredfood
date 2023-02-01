@@ -32,7 +32,7 @@ public class RestauranteProdutoController {
 
     @GetMapping
     public List<ProdutoDTO> listar(@PathVariable Long restauranteId) {
-        final Restaurante restaurante = restauranteService.buscar(restauranteId);
+        final Restaurante restaurante = restauranteService.consultar(restauranteId);
 
         return produtoModelMapper.toCollectionModel(restaurante.getProdutos());
     }
@@ -47,7 +47,7 @@ public class RestauranteProdutoController {
     @PostMapping
     public ResponseEntity<?> adicionar(@PathVariable Long restauranteId,
                                        @RequestBody @Valid ProdutoRequest request) {
-        Restaurante restaurante = restauranteService.buscar(restauranteId);
+        Restaurante restaurante = restauranteService.consultar(restauranteId);
 
         Produto produto = produtoDomainMapper.toDomainObject(request);
         produto.setRestaurante(restaurante);

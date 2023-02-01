@@ -41,8 +41,8 @@ public class RestauranteController {
     private RestauranteDomainMapper restauranteDomainMapper;
 
     @GetMapping("/{restauranteId}")
-    public ResponseEntity<RestauranteDTO> buscar(@PathVariable Long restauranteId) {
-        Restaurante restaurante = restauranteService.buscar(restauranteId);
+    public ResponseEntity<RestauranteDTO> consultar(@PathVariable Long restauranteId) {
+        Restaurante restaurante = restauranteService.consultar(restauranteId);
 
         RestauranteDTO restauranteDTO = restauranteModelMapper.toModel(restaurante);
 
@@ -53,8 +53,8 @@ public class RestauranteController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/buscar-primeiro")
-    public ResponseEntity<Restaurante> buscarPrimeiro() {
+    @GetMapping("/consultar-primeiro")
+    public ResponseEntity<Restaurante> consultarPrimeiro() {
         final Optional<Restaurante> restaurante = restauranteRepository.buscarPrimeiro();
 
         if (restaurante.isPresent()) {
@@ -65,7 +65,7 @@ public class RestauranteController {
     }
 
     @GetMapping("/com-frete-gratis")
-    public List<Restaurante> buscar(@Param("nome") String nome) {
+    public List<Restaurante> consultar(@Param("nome") String nome) {
 
         final List<Restaurante> restaurantes = restauranteRepository.findComFreteGratis(nome);
 
@@ -100,7 +100,7 @@ public class RestauranteController {
     public ResponseEntity<?> atualizar(@PathVariable Long restauranteId,
                                        @RequestBody @Valid RestauranteRequest request) {
         try {
-            Restaurante restauranteAtual = restauranteService.buscar(restauranteId);
+            Restaurante restauranteAtual = restauranteService.consultar(restauranteId);
 
             restauranteDomainMapper.copyToDomainObject(request, restauranteAtual);
 

@@ -8,7 +8,9 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -35,7 +37,7 @@ public class Usuario {
     @JoinTable(name = "usuario_grupo",
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "grupo_id"))
-    private List<Grupo> grupos = new ArrayList<>();
+    private Set<Grupo> grupos = new HashSet<>();
 
     public boolean senhaCoincideCom(String senha) {
         return getSenha().equals(senha);
@@ -45,4 +47,11 @@ public class Usuario {
         return !senhaCoincideCom(senha);
     }
 
+    public boolean adicionarGrupo(Grupo grupo) {
+        return getGrupos().add(grupo);
+    }
+
+    public boolean removerGrupo(Grupo grupo) {
+        return getGrupos().remove(grupo);
+    }
 }

@@ -41,7 +41,7 @@ public class CozinhaController {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CozinhaDTO> findById(@PathVariable("id") Long id) {
-        final Cozinha cozinha = cadastroCozinha.buscar(id);
+        final Cozinha cozinha = cadastroCozinha.consultar(id);
         return ResponseEntity.ok(cozinhaModelMapper.toModel(cozinha));
     }
 
@@ -61,7 +61,7 @@ public class CozinhaController {
     public ResponseEntity<CozinhaDTO> atualizar(@PathVariable("id") Long id,
                                              @RequestBody @Valid CozinhaRequest request) {
 
-        final Cozinha cozinhaAtual = cadastroCozinha.buscar(id);
+        final Cozinha cozinhaAtual = cadastroCozinha.consultar(id);
 
         cozinhaDomainMapper.copyToDomainObject(request, cozinhaAtual);
 
@@ -80,16 +80,4 @@ public class CozinhaController {
         cadastroCozinha.excluir(id);
     }
 
-//
-//    @DeleteMapping
-//    public ResponseEntity<Cozinha> remover(Long id) {
-//        try {
-//            cadastroCozinha.excluir(id);
-//            return ResponseEntity.notFound().build();
-//        } catch (EntidadeNaoEncontradaException ex) {
-//            return ResponseEntity.notFound().build();
-//        } catch (EntidadeEmUsoException ex) {
-//            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-//        }
-//    }
 }

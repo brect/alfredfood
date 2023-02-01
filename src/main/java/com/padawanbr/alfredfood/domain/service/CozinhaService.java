@@ -24,7 +24,7 @@ public class CozinhaService {
     @Autowired
     private CozinhaRepository cozinhaRepository;
 
-    public Cozinha buscar(Long idCozinha) {
+    public Cozinha consultar(Long idCozinha) {
         return cozinhaRepository.findById(idCozinha)
                 .orElseThrow(() -> new CozinhaNaoEncontradaException(idCozinha));
 

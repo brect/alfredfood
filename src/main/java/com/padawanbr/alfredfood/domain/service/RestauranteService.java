@@ -44,7 +44,7 @@ public class RestauranteService {
         Long idCozinha = restaurante.getCozinha().getId();
         final Long idCidade = restaurante.getEndereco().getCidade().getId();
 
-        final Cozinha cozinha = cozinhaService.buscar(idCozinha);
+        final Cozinha cozinha = cozinhaService.consultar(idCozinha);
         final Cidade cidade = cidadeService.consultar(idCidade);
 
         restaurante.setCozinha(cozinha);
@@ -53,7 +53,7 @@ public class RestauranteService {
         return restauranteRepository.save(restaurante);
     }
 
-    public Restaurante buscar(Long restauranteId) {
+    public Restaurante consultar(Long restauranteId) {
         return restauranteRepository.findById(restauranteId)
                 .orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
     }
@@ -72,26 +72,26 @@ public class RestauranteService {
 
     @Transactional
     public void ativar(Long idRestaurante){
-        final Restaurante restaurante = buscar(idRestaurante);
+        final Restaurante restaurante = consultar(idRestaurante);
         restaurante.desativar();
     }
 
     @Transactional
     public void desativar(Long idRestaurante){
-        final Restaurante restaurante = buscar(idRestaurante);
+        final Restaurante restaurante = consultar(idRestaurante);
         restaurante.desativar();
     }
 
     @Transactional
     public void desassociarFormaPagamento(Long restauranteId, Long formaPagamentoId){
-        final Restaurante restaurante = buscar(restauranteId);
+        final Restaurante restaurante = consultar(restauranteId);
         final FormaPagamento formaPagamento = formaPagamentoService.consultar(formaPagamentoId);
 
         restaurante.removerFormaPagamento(formaPagamento);
     }
     @Transactional
     public void associarFormaPagamento(Long restauranteId, Long formaPagamentoId){
-        final Restaurante restaurante = buscar(restauranteId);
+        final Restaurante restaurante = consultar(restauranteId);
         final FormaPagamento formaPagamento = formaPagamentoService.consultar(formaPagamentoId);
 
         restaurante.adicionarFormaPagamento(formaPagamento);
@@ -99,13 +99,13 @@ public class RestauranteService {
 
     @Transactional
     public void abrir(Long restauranteId) {
-        final Restaurante restaurante = buscar(restauranteId);
+        final Restaurante restaurante = consultar(restauranteId);
         restaurante.abrir();
     }
 
     @Transactional
     public void fechar(Long restauranteId) {
-        final Restaurante restaurante = buscar(restauranteId);
+        final Restaurante restaurante = consultar(restauranteId);
         restaurante.fechar();
     }
 }

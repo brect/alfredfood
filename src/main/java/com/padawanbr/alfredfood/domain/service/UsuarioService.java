@@ -2,6 +2,7 @@ package com.padawanbr.alfredfood.domain.service;
 
 import com.padawanbr.alfredfood.domain.exception.BussinesException;
 import com.padawanbr.alfredfood.domain.exception.UsuarioNaoEncontradoException;
+import com.padawanbr.alfredfood.domain.model.Grupo;
 import com.padawanbr.alfredfood.domain.model.Usuario;
 import com.padawanbr.alfredfood.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private GruposService gruposService;
 
     @Transactional
     public Usuario salvar(Usuario usuario) {
@@ -49,5 +53,21 @@ public class UsuarioService {
 
     public List<Usuario> consultarTodos() {
         return usuarioRepository.findAll();
+    }
+
+    @Transactional
+    public void desassociarFormaPagamento(Long usuarioId, Long grupoId) {
+        final Usuario usuario = consultar(usuarioId);
+        final Grupo grupo = gruposService.consultar(grupoId);
+
+        usuario.removerGrupo(grupo);
+    }
+
+    @Transactional
+    public void associarFormaPagamento(Long usuarioId, Long grupoId) {
+        final Usuario usuario = consultar(usuarioId);
+        final Grupo grupo = gruposService.consultar(grupoId);
+
+        usuario.adicionarGrupo(grupo);
     }
 }

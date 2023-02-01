@@ -25,7 +25,7 @@ public class RestauranteFormaPagamentoController {
 
     @GetMapping
     public List<FormaPagamentoDTO> listar(@PathVariable Long restauranteId) {
-        final Restaurante restaurante = restauranteService.buscar(restauranteId);
+        final Restaurante restaurante = restauranteService.consultar(restauranteId);
 
         return formaPagamentoModelMapper.toCollectionModel(restaurante.getFormasPagamento());
     }
