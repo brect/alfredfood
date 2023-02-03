@@ -21,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.lang.String;
 
 @RestController
 @RequestMapping(value = "/pedidos/{pedidoId}")
@@ -30,7 +31,7 @@ public class StatusPedidoController {
     private StatusPedidoService statusPedidoService;
 
     @PutMapping("/confirmacao")
-    public ResponseEntity<?> confirmar(@PathVariable Long pedidoId){
+    public ResponseEntity<?> confirmar(@PathVariable String pedidoId){
 
         statusPedidoService.confirmar(pedidoId);
 
@@ -38,13 +39,13 @@ public class StatusPedidoController {
     }
 
     @PutMapping("/cancelamento")
-    public ResponseEntity<?> cancelamento(@PathVariable Long pedidoId){
+    public ResponseEntity<?> cancelamento(@PathVariable String pedidoId){
         statusPedidoService.cancelar(pedidoId);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/entrega")
-    public ResponseEntity<?> entrega(@PathVariable Long pedidoId){
+    public ResponseEntity<?> entrega(@PathVariable String pedidoId){
         statusPedidoService.entregar(pedidoId);
         return ResponseEntity.noContent().build();
     }

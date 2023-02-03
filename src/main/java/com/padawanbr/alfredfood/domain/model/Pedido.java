@@ -1,6 +1,7 @@
 package com.padawanbr.alfredfood.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.padawanbr.alfredfood.domain.exception.BussinesException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -21,6 +23,8 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String codigo;
 
     private BigDecimal subtotal;
     private BigDecimal taxaFrete;
@@ -77,5 +81,34 @@ public class Pedido {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         this.valorTotal = this.subtotal.add(this.taxaFrete);
+    }
+
+    public void confirmar(){
+        setStatus(StatusPedido.CONFIRMADO);
+        setDataConfirmacao(OffsetDateTime.now());
+    }
+    public void cancelar(){
+        setStatus(StatusPedido.CANCELADO);
+        setDataCancelamento(OffsetDateTime.now());
+    }
+    public void entregar(){
+        setStatus(StatusPedido.ENTREGUE);
+        setDataEntrega(OffsetDateTime.now());
+    }
+
+    private void setStatus(StatusPedido novoStatus){
+        if (getStatus().verificaAlteracaoPara(novoStatus)) {
+            throw new BussinesException(
+                    String.format("Status do pedido %s não pode ser alterado de %s para %s",
+                            getCodigo(),
+                            getStatus().getDescricao(),
+                            novoStatus.getDescricao()));
+        }
+        this.status = novoStatus;
+    }
+
+    @PrePersist
+    private void gerarCodigo(){
+        setCodigo(UUID.randomUUID().toString());
     }
 }

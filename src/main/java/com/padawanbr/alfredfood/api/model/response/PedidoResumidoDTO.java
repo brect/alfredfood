@@ -11,8 +11,8 @@ import java.time.OffsetDateTime;
 @Getter
 @Setter
 public class PedidoResumidoDTO {
-
-    private Long id;
+    
+    private String codigo;
     private BigDecimal subtotal;
     private BigDecimal taxaFrete;
     private BigDecimal valorTotal;

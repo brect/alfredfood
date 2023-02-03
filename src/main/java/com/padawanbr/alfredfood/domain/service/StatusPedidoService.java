@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.OffsetDateTime;
+import java.lang.String;
 
 @Service
 public class StatusPedidoService {
@@ -17,44 +18,22 @@ public class StatusPedidoService {
     private PedidoService pedidoService;
 
     @Transactional
-    public void confirmar(Long pedidoId) {
-        final Pedido pedido = pedidoService.consultar(pedidoId);
-        verificaStatusPedido(pedido, StatusPedido.CRIADO, StatusPedido.CONFIRMADO);
-        atualizaStatusPedido(pedido, StatusPedido.CONFIRMADO);
+    public void confirmar(String pedidoId) {
+        final Pedido pedido = pedidoService.consultarCodigo(pedidoId);
+        pedido.confirmar();
     }
 
     @Transactional
-    public void cancelar(Long pedidoId) {
-        final Pedido pedido = pedidoService.consultar(pedidoId);
-        verificaStatusPedido(pedido, StatusPedido.CRIADO, StatusPedido.CANCELADO);
-        atualizaStatusPedido(pedido, StatusPedido.CANCELADO);
+    public void cancelar(String pedidoId) {
+        final Pedido pedido = pedidoService.consultarCodigo(pedidoId);
+        pedido.cancelar();
     }
 
     @Transactional
-    public void entregar(Long pedidoId) {
-        final Pedido pedido = pedidoService.consultar(pedidoId);
-        verificaStatusPedido(pedido, StatusPedido.CONFIRMADO, StatusPedido.ENTREGUE);
-        atualizaStatusPedido(pedido, StatusPedido.ENTREGUE);
+    public void entregar(String pedidoId) {
+        final Pedido pedido = pedidoService.consultarCodigo(pedidoId);
+        pedido.entregar();
     }
 
-    private void verificaStatusPedido(Pedido pedido, StatusPedido criado, StatusPedido confirmado) {
-        if (!pedido.getStatus().equals(criado)) {
-            getBussinesException(pedido, confirmado);
-        }
-    }
-
-    private void atualizaStatusPedido(Pedido pedido, StatusPedido statusPedido) {
-        pedido.setStatus(statusPedido);
-        pedido.setDataConfirmacao(OffsetDateTime.now());
-    }
-
-
-    private void getBussinesException(Pedido pedido, StatusPedido cancelado) {
-        throw new BussinesException(
-                String.format("Status do pedido %s não pode ser alterado de %s para %s",
-                        pedido.getId(),
-                        pedido.getStatus().getDescricao(),
-                        cancelado.getDescricao()));
-    }
 
 }

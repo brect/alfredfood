@@ -33,7 +33,12 @@ public class PedidoService {
 
     public Pedido consultar(Long pedidoId) {
         return pedidoRepository.findById(pedidoId)
-                .orElseThrow(() -> new PedidoNaoEncontradoException(pedidoId));
+                .orElseThrow(() -> new PedidoNaoEncontradoException(pedidoId.toString()));
+    }
+
+    public Pedido consultarCodigo(String codigo) {
+        return pedidoRepository.findByCodigo(codigo)
+                .orElseThrow(() -> new PedidoNaoEncontradoException(codigo));
     }
 
     public List<Pedido> findAll() {
