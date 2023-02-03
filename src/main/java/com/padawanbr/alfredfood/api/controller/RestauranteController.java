@@ -1,9 +1,11 @@
 package com.padawanbr.alfredfood.api.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.padawanbr.alfredfood.api.mapper.RestauranteDomainMapper;
 import com.padawanbr.alfredfood.api.mapper.RestauranteModelMapper;
 import com.padawanbr.alfredfood.api.model.request.RestauranteRequest;
 import com.padawanbr.alfredfood.api.model.response.RestauranteDTO;
+import com.padawanbr.alfredfood.api.model.response.RestauranteView;
 import com.padawanbr.alfredfood.domain.exception.*;
 import com.padawanbr.alfredfood.domain.model.Restaurante;
 import com.padawanbr.alfredfood.domain.repository.RestauranteRepository;
@@ -74,6 +76,11 @@ public class RestauranteController {
         return restauranteModelMapper.toCollectionModel(restauranteService.listar());
     }
 
+    @JsonView(RestauranteView.Resumo.class)
+    @GetMapping(params = "view=simple")
+    public List<RestauranteDTO> listarResumimo() {
+        return restauranteModelMapper.toCollectionModel(restauranteService.listar());
+    }
 
     @PostMapping
     public ResponseEntity<?> adicionar(@RequestBody @Valid RestauranteRequest request) {
