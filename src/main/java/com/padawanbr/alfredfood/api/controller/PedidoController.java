@@ -1,20 +1,19 @@
 package com.padawanbr.alfredfood.api.controller;
 
-import com.padawanbr.alfredfood.api.mapper.*;
+import com.padawanbr.alfredfood.api.mapper.PedidoDomainMapper;
+import com.padawanbr.alfredfood.api.mapper.PedidoModelMapper;
+import com.padawanbr.alfredfood.api.mapper.PedidoResumidoModelMapper;
 import com.padawanbr.alfredfood.api.model.request.PedidoRequest;
-import com.padawanbr.alfredfood.api.model.response.CozinhaDTO;
 import com.padawanbr.alfredfood.api.model.response.PedidoDTO;
 import com.padawanbr.alfredfood.api.model.response.PedidoResumidoDTO;
 import com.padawanbr.alfredfood.domain.exception.BussinesException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
-import com.padawanbr.alfredfood.domain.model.Cozinha;
 import com.padawanbr.alfredfood.domain.model.Pedido;
 import com.padawanbr.alfredfood.domain.model.Usuario;
 import com.padawanbr.alfredfood.domain.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
