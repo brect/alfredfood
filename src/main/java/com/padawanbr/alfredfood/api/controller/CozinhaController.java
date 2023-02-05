@@ -9,14 +9,16 @@ import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.model.Cozinha;
 import com.padawanbr.alfredfood.domain.repository.CozinhaRepository;
 import com.padawanbr.alfredfood.domain.service.CozinhaService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import org.springframework.data.domain.Pageable;
 import java.net.URI;
 import java.util.List;
 
@@ -35,8 +37,15 @@ public class CozinhaController {
     private CozinhaDomainMapper cozinhaDomainMapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CozinhaDTO>> listar() {
-        return ResponseEntity.ok(cozinhaModelMapper.toCollectionModel(cozinhaRepository.findAll()));
+    public ResponseEntity<?> listar(Pageable pageable) {
+
+        Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
+
+        final List<CozinhaDTO> cozinhas = cozinhaModelMapper.toCollectionModel(cozinhasPage.getContent());
+
+        Page<CozinhaDTO> cozinhaPaginadas = new PageImpl<>(cozinhas, pageable, cozinhasPage.getTotalElements());
+
+        return ResponseEntity.ok(cozinhaPaginadas);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
