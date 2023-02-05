@@ -31,10 +31,18 @@ public class RestauranteProdutoController {
     private ProdutoDomainMapper produtoDomainMapper;
 
     @GetMapping
-    public List<ProdutoDTO> listar(@PathVariable Long restauranteId) {
+    public List<ProdutoDTO> listar(@PathVariable Long restauranteId, @RequestParam(required = false) boolean ativo) {
         final Restaurante restaurante = restauranteService.consultar(restauranteId);
 
-        return produtoModelMapper.toCollectionModel(restaurante.getProdutos());
+        List<Produto> produtos = null;
+
+        if (ativo) {
+            produtos = produtoService.consultarAtivos(restaurante);
+        } else {
+            produtos = produtoService.consultarTodos(restaurante);
+        }
+
+        return produtoModelMapper.toCollectionModel(produtos);
     }
 
     @GetMapping("/{produtoId}")
