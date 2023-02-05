@@ -5,6 +5,7 @@ import com.padawanbr.alfredfood.domain.exception.PedidoNaoEncontradoException;
 import com.padawanbr.alfredfood.domain.model.*;
 import com.padawanbr.alfredfood.domain.repository.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -41,6 +42,9 @@ public class PedidoService {
                 .orElseThrow(() -> new PedidoNaoEncontradoException(codigo));
     }
 
+    public List<Pedido> pesquisar(Specification<Pedido> pedidoSpecification) {
+        return pedidoRepository.findAll(pedidoSpecification);
+    }
     public List<Pedido> findAll() {
         return pedidoRepository.findAll();
     }
