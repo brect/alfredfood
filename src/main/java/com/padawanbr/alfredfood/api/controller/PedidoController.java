@@ -14,6 +14,10 @@ import com.padawanbr.alfredfood.domain.repository.filter.PedidoFilter;
 import com.padawanbr.alfredfood.domain.service.PedidoService;
 import com.padawanbr.alfredfood.infrastructure.specification.PedidoSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +41,17 @@ public class PedidoController {
     private PedidoDomainMapper pedidoDomainMapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<PedidoResumidoDTO>> pesquisar(PedidoFilter pedidoFilter) {
-        return ResponseEntity.ok(pedidoResumidoModelMapper.toCollectionModel(pedidoService.pesquisar(PedidoSpecs.usandoFiltro(pedidoFilter))));
+    public ResponseEntity<?> pesquisar(Pageable pageable, PedidoFilter pedidoFilter) {
+
+        final Specification<Pedido> pedidoSpecification = PedidoSpecs.usandoFiltro(pedidoFilter);
+
+        final Page<Pedido> pedidosPage = pedidoService.pesquisar(pedidoSpecification, pageable);
+
+        final List<PedidoResumidoDTO> pedidoResumido = pedidoResumidoModelMapper.toCollectionModel(pedidosPage.getContent());
+
+        Page<PedidoResumidoDTO> pedidosPaginados = new PageImpl<>(pedidoResumido, pageable, pedidosPage.getTotalElements());
+
+        return ResponseEntity.ok(pedidosPaginados);
     }
 
 //    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

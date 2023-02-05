@@ -12,6 +12,7 @@ import com.padawanbr.alfredfood.domain.service.CozinhaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,7 @@ public class CozinhaController {
     private CozinhaDomainMapper cozinhaDomainMapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> listar(Pageable pageable) {
+    public ResponseEntity<?> listar(@PageableDefault(size = 10) Pageable pageable) {
 
         Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
 
