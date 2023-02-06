@@ -6,6 +6,7 @@ import com.padawanbr.alfredfood.api.mapper.PedidoResumidoModelMapper;
 import com.padawanbr.alfredfood.api.model.request.PedidoRequest;
 import com.padawanbr.alfredfood.api.model.response.PedidoDTO;
 import com.padawanbr.alfredfood.api.model.response.PedidoResumidoDTO;
+import com.padawanbr.alfredfood.core.data.PageableTranslator;
 import com.padawanbr.alfredfood.domain.exception.BussinesException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.model.Pedido;
@@ -14,6 +15,7 @@ import com.padawanbr.alfredfood.domain.repository.filter.PedidoFilter;
 import com.padawanbr.alfredfood.domain.service.PedidoService;
 import com.padawanbr.alfredfood.infrastructure.specification.PedidoSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -23,9 +25,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableMap;
+
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/pedidos")
@@ -45,6 +51,8 @@ public class PedidoController {
 
         final Specification<Pedido> pedidoSpecification = PedidoSpecs.usandoFiltro(pedidoFilter);
 
+        pageable = converterPageable(pageable);
+        
         final Page<Pedido> pedidosPage = pedidoService.pesquisar(pedidoSpecification, pageable);
 
         final List<PedidoResumidoDTO> pedidoResumido = pedidoResumidoModelMapper.toCollectionModel(pedidosPage.getContent());
@@ -54,10 +62,16 @@ public class PedidoController {
         return ResponseEntity.ok(pedidosPaginados);
     }
 
-//    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<List<PedidoResumidoDTO>> listar() {
-//        return ResponseEntity.ok(pedidoResumidoModelMapper.toCollectionModel(pedidoService.findAll()));
-//    }
+    private Pageable converterPageable(Pageable pageable) {
+        var mapper = ImmutableMap.of(
+                "codigo", "codigo",
+                "nomeCliente", "cliente.nome",
+                "restaurante.nome", "restaurante.nome",
+                "valorTotal", "valorTotal"
+        );
+
+        return PageableTranslator.translate(pageable, mapper);
+    }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PedidoDTO> findById(@PathVariable("id") Long id) {

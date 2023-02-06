@@ -11,7 +11,6 @@ import java.io.IOException;
 @JsonComponent
 public class PageJsonSerializer extends JsonSerializer<Page<?>> {
 
-
     @Override
     public void serialize(Page<?> page, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
