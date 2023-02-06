@@ -1,0 +1,17 @@
+-------------------------------------------------------------------------------
+Test set: com.padawanbr.alfredfood.domain.service.CozinhaServiceIT
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 5.368 s <<< FAILURE! - in com.padawanbr.alfredfood.domain.service.CozinhaServiceIT
+deve_falhar_quando_cadastrar_cozinha_sem_nome  Time elapsed: 0.019 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception type thrown ==> expected: <javax.validation.ConstraintViolationException> but was: <org.springframework.dao.DataIntegrityViolationException>
+	at com.padawanbr.alfredfood.domain.service.CozinhaServiceIT.deve_falhar_quando_cadastrar_cozinha_sem_nome(CozinhaServiceIT.java:39)
+Caused by: org.springframework.dao.DataIntegrityViolationException: could not execute statement; SQL [n/a]; constraint [null]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement
+	at com.padawanbr.alfredfood.domain.service.CozinhaServiceIT.lambda$deve_falhar_quando_cadastrar_cozinha_sem_nome$0(CozinhaServiceIT.java:40)
+	at com.padawanbr.alfredfood.domain.service.CozinhaServiceIT.deve_falhar_quando_cadastrar_cozinha_sem_nome(CozinhaServiceIT.java:39)
+Caused by: org.hibernate.exception.ConstraintViolationException: could not execute statement
+	at com.padawanbr.alfredfood.domain.service.CozinhaServiceIT.lambda$deve_falhar_quando_cadastrar_cozinha_sem_nome$0(CozinhaServiceIT.java:40)
+	at com.padawanbr.alfredfood.domain.service.CozinhaServiceIT.deve_falhar_quando_cadastrar_cozinha_sem_nome(CozinhaServiceIT.java:39)
+Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'nome' cannot be null
+	at com.padawanbr.alfredfood.domain.service.CozinhaServiceIT.lambda$deve_falhar_quando_cadastrar_cozinha_sem_nome$0(CozinhaServiceIT.java:40)
+	at com.padawanbr.alfredfood.domain.service.CozinhaServiceIT.deve_falhar_quando_cadastrar_cozinha_sem_nome(CozinhaServiceIT.java:39)
+

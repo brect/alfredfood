@@ -1,0 +1,6 @@
+com/padawanbr/alfredfood/domain/service/CadastroRestauranteAPI.class
+com/padawanbr/alfredfood/util/ResourceUtils.class
+com/padawanbr/alfredfood/domain/service/CozinhaServiceAPI.class
+com/padawanbr/alfredfood/domain/service/CozinhaServiceIT.class
+com/padawanbr/alfredfood/AlfredfoodApplicationTests.class
+com/padawanbr/alfredfood/util/DatabaseCleaner.class
