@@ -5,7 +5,6 @@ import com.padawanbr.alfredfood.domain.model.Pedido;
 import com.padawanbr.alfredfood.domain.model.StatusPedido;
 import com.padawanbr.alfredfood.domain.model.dto.VendaDiaria;
 import com.padawanbr.alfredfood.domain.service.VendaQueryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -22,15 +21,21 @@ public class VendaQueryServiceImpl implements VendaQueryService {
     private EntityManager entityManager;
 
     @Override
-    public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter vendaDiariaFilter) {
+    public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter vendaDiariaFilter, String timeOffset) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
         final CriteriaQuery<VendaDiaria> query = criteriaBuilder.createQuery(VendaDiaria.class);
 
         final Root<Pedido> root = query.from(Pedido.class);
 
+        final var convertTzExpression = criteriaBuilder.function("convert_tz",
+                Date.class,
+                root.get("dataCriacao"),
+                criteriaBuilder.literal("+00:00"),
+                criteriaBuilder.literal(timeOffset));
+
         var localDateExpression = criteriaBuilder.function(
-                "date", Date.class, root.get("dataCriacao"));
+                "date", Date.class, convertTzExpression);
 
         final CompoundSelection<VendaDiaria> vendaDiariaCompoundSelection = criteriaBuilder.construct(
                 VendaDiaria.class,

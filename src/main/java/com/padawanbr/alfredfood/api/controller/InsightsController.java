@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -18,7 +19,8 @@ public class InsightsController {
 
 
     @GetMapping("/vendas-diarias")
-    private ResponseEntity<?> consultarVendasDiarias(VendaDiariaFilter filter){
-        return ResponseEntity.ok(vendaQueryService.consultarVendasDiarias(filter));
+    private ResponseEntity<?> consultarVendasDiarias(VendaDiariaFilter filter,
+                                                     @RequestParam(required = false, defaultValue = "+00:00") String timeOffset){
+        return ResponseEntity.ok(vendaQueryService.consultarVendasDiarias(filter, timeOffset));
     }
 }
