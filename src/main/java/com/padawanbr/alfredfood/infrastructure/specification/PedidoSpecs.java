@@ -1,12 +1,10 @@
 package com.padawanbr.alfredfood.infrastructure.specification;
 
 import com.padawanbr.alfredfood.domain.model.Pedido;
-import com.padawanbr.alfredfood.domain.model.Restaurante;
-import com.padawanbr.alfredfood.domain.repository.filter.PedidoFilter;
+import com.padawanbr.alfredfood.domain.filter.PedidoFilter;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class PedidoSpecs {

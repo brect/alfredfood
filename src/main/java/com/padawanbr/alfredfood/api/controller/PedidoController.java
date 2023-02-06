@@ -11,11 +11,10 @@ import com.padawanbr.alfredfood.domain.exception.BussinesException;
 import com.padawanbr.alfredfood.domain.exception.EntidadeNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.model.Pedido;
 import com.padawanbr.alfredfood.domain.model.Usuario;
-import com.padawanbr.alfredfood.domain.repository.filter.PedidoFilter;
+import com.padawanbr.alfredfood.domain.filter.PedidoFilter;
 import com.padawanbr.alfredfood.domain.service.PedidoService;
 import com.padawanbr.alfredfood.infrastructure.specification.PedidoSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -25,13 +24,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMap;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/pedidos")
