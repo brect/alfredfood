@@ -1,5 +1,6 @@
 package com.padawanbr.alfredfood.domain.repository;
 
+import com.padawanbr.alfredfood.domain.model.FotoProduto;
 import com.padawanbr.alfredfood.domain.model.Restaurante;
 
 import java.math.BigDecimal;
