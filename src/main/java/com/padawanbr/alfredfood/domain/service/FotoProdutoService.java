@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.InputStream;
 import java.util.Optional;
 
 @Service
@@ -14,14 +15,33 @@ public class FotoProdutoService {
     @Autowired
     private ProdutoRepository produtoRepository;
 
+    @Autowired
+    private FotoStorageService fotoStorageService;
+
     @Transactional
-    public FotoProduto salvar(FotoProduto fotoProduto) {
+    public FotoProduto salvar(FotoProduto fotoProduto, InputStream inputStream) {
         final Optional<FotoProduto> fotoProdutoSalvo = produtoRepository.findFotoById(fotoProduto.getRestauranteId(), fotoProduto.getProdutoId());
 
-        if (fotoProdutoSalvo.isPresent()){
+        final String nomeArquivoAtualizado = fotoStorageService.getNomeArquivo(fotoProduto.getNomeArquivo());
+
+        String nomeArquivoExistente = null;
+
+        if (fotoProdutoSalvo.isPresent()) {
+            nomeArquivoExistente= fotoProdutoSalvo.get().getNomeArquivo();
             produtoRepository.delete(fotoProdutoSalvo.get());
         }
 
-        return produtoRepository.save(fotoProduto);
+        fotoProduto.setNomeArquivo(nomeArquivoAtualizado);
+        final FotoProduto fotoSalva = produtoRepository.save(fotoProduto);
+        produtoRepository.flush();
+
+        final FotoStorageService.NovaFoto novaFoto = FotoStorageService.NovaFoto.builder()
+                .nomeArquivo(fotoProduto.getNomeArquivo())
+                .inputStream(inputStream)
+                .build();
+
+        fotoStorageService.atualizar(novaFoto, nomeArquivoExistente);
+
+        return fotoSalva;
     }
 }

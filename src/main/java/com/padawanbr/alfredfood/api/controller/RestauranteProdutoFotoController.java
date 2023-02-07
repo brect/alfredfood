@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
@@ -32,7 +33,7 @@ public class RestauranteProdutoFotoController {
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> atualizarFoto(@PathVariable Long restauranteId,
                                         @PathVariable Long produtoId,
-                                        @Valid FotoProdutoRequest request){
+                                        @Valid FotoProdutoRequest request) throws IOException {
 
         final Produto produto = produtoService.consultar(restauranteId, produtoId);
 
@@ -46,7 +47,7 @@ public class RestauranteProdutoFotoController {
         fotoProduto.setNomeArquivo(multipartFile.getName());
 
 
-        final FotoProduto fotoProdutoSalvo = fotoProdutoService.salvar(fotoProduto);
+        final FotoProduto fotoProdutoSalvo = fotoProdutoService.salvar(fotoProduto, multipartFile.getInputStream());
 
         return ResponseEntity.ok(fotoProdutoModelMapper.toModel(fotoProdutoSalvo));
 
