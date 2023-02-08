@@ -1,0 +1,11 @@
+{
+  "groups": [
+    {
+      "name": "alfredfood.storage",
+      "type": "com.padawanbr.alfredfood.core.storage.StorageProperties",
+      "sourceType": "com.padawanbr.alfredfood.core.storage.StorageProperties"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}
