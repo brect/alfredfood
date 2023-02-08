@@ -1,5 +1,6 @@
 package com.padawanbr.alfredfood.domain.service;
 
+import com.padawanbr.alfredfood.domain.exception.FotoProdutoNaoEncontradaException;
 import com.padawanbr.alfredfood.domain.model.FotoProduto;
 import com.padawanbr.alfredfood.domain.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class FotoProdutoService {
         String nomeArquivoExistente = null;
 
         if (fotoProdutoSalvo.isPresent()) {
-            nomeArquivoExistente= fotoProdutoSalvo.get().getNomeArquivo();
+            nomeArquivoExistente = fotoProdutoSalvo.get().getNomeArquivo();
             produtoRepository.delete(fotoProdutoSalvo.get());
         }
 
@@ -43,5 +44,11 @@ public class FotoProdutoService {
         fotoStorageService.atualizar(novaFoto, nomeArquivoExistente);
 
         return fotoSalva;
+    }
+
+    public FotoProduto consultar(Long restauranteId, Long produtoId) {
+        return produtoRepository.findFotoById(restauranteId, produtoId).orElseThrow(
+                () -> new FotoProdutoNaoEncontradaException(restauranteId, produtoId)
+        );
     }
 }
