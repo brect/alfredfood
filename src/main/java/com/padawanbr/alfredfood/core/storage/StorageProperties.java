@@ -1,5 +1,6 @@
 package com.padawanbr.alfredfood.core.storage;
 
+import com.amazonaws.regions.Regions;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -13,8 +14,8 @@ import java.nio.file.Path;
 @ConfigurationProperties("alfredfood.storage")
 public class StorageProperties {
 
-    private Local local;
-    private S3 s3;
+    private Local local = new Local();
+    private S3 s3 = new S3();
 
     @Getter
     @Setter
@@ -22,7 +23,7 @@ public class StorageProperties {
         private String idChaveAcesso;
         private String chaveAcessoSecreta;
         private String bucket;
-        private String region;
+        private Regions region;
         private String diretorioFotos;
     }
 

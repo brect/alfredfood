@@ -8,27 +8,47 @@ import java.util.UUID;
 
 public interface FotoStorageService {
 
-    InputStream recuperar(String nomeArquivo);
+    ConsultaFoto recuperar(String nomeArquivo);
 
     void armazenar(NovaFoto novaFoto);
 
-    default void atualizar(NovaFoto novaFoto, String nomeArquivoExistente) {
+    void remover(String nomeArquivo);
+
+    default void substituir(String nomeArquivoAntigo, NovaFoto novaFoto) {
         this.armazenar(novaFoto);
-        if (nomeArquivoExistente != null) {
-            this.remover(nomeArquivoExistente);
+
+        if (nomeArquivoAntigo != null) {
+            this.remover(nomeArquivoAntigo);
         }
     }
 
-    void remover(String nomeArquivo);
-
-    default String getNomeArquivo(String nomeOriginal) {
-        return UUID.randomUUID().toString().concat("_").concat(nomeOriginal);
+    default String gerarNomeArquivo(String nomeOriginal) {
+        return UUID.randomUUID().toString() + "_" + nomeOriginal;
     }
 
-    @Getter
     @Builder
+    @Getter
     class NovaFoto {
+
         private String nomeArquivo;
+        private String contentType;
         private InputStream inputStream;
+
+    }
+
+    @Builder
+    @Getter
+    class ConsultaFoto {
+
+        private String url;
+        private InputStream inputStream;
+
+        public boolean containsUrl(){
+            return url != null;
+        }
+        public boolean containsInputStream(){
+            return inputStream != null;
+        }
+
     }
 }

@@ -10,16 +10,16 @@ import com.padawanbr.alfredfood.domain.service.FotoStorageService;
 import com.padawanbr.alfredfood.domain.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 @RestController
@@ -37,7 +37,7 @@ public class RestauranteProdutoFotoController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> consultarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
-        FotoProduto fotoProduto = fotoProdutoService.consultar(restauranteId, produtoId);
+        FotoProduto fotoProduto = fotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
         return ResponseEntity.ok(fotoProdutoModelMapper.toModel(fotoProduto));
 
     }
@@ -47,18 +47,25 @@ public class RestauranteProdutoFotoController {
                                                   @PathVariable Long produtoId,
                                                   @RequestHeader(name = "Accept") String acceptHeader) {
         try {
-            FotoProduto fotoProduto = fotoProdutoService.consultar(restauranteId, produtoId);
+            FotoProduto fotoProduto = fotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
 
             final MediaType mediaType = MediaType.parseMediaType(fotoProduto.getContentType());
             List<MediaType> mediaTypeAcceptList = MediaType.parseMediaTypes(acceptHeader);
 
             verificaCompatibilidadeMediaType(mediaType, mediaTypeAcceptList);
 
-            InputStream inputStream = fotoStorageService.recuperar(fotoProduto.getNomeArquivo());
+            final FotoStorageService.ConsultaFoto consultaFoto = fotoStorageService.recuperar(fotoProduto.getNomeArquivo());
 
-            return ResponseEntity.ok()
-                    .contentType(mediaType)
-                    .body(new InputStreamResource(inputStream));
+            if (consultaFoto.containsUrl()) {
+                return ResponseEntity
+                        .status(HttpStatus.FOUND)
+                        .header(HttpHeaders.LOCATION, consultaFoto.getUrl())
+                        .build();
+            } else {
+                return ResponseEntity.ok()
+                        .contentType(mediaType)
+                        .body(new InputStreamResource(consultaFoto.getInputStream()));
+            }
         } catch (EntidadeNaoEncontradaException | HttpMediaTypeNotAcceptableException ex) {
             return ResponseEntity.notFound().build();
         }
